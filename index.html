@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0068)file:///Users/rodrigotravassos/Downloads/painel_sanduicheria_11.html -->
-<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel de Custos — Sanduícheria</title>
-<link href="./Painel de Custos — Sanduícheria_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg:#F5F2EB; --bg2:#EDEADF; --card:#FFFFFF; --border:#D6D0C4;
@@ -172,272 +172,53 @@
 <header>
   <div>
     <h1>Painel de Custos 🥪</h1>
-    <p id="ultima-atualizacao">Atualizado em 06/05/2026, 14:56:51 · 48 lançamentos</p>
+    <p id="ultima-atualizacao">Clique em atualizar para carregar os dados</p>
   </div>
-  <button class="btn btn-secondary" onclick="loadData()">↻ Atualizar gastos</button>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="btn btn-secondary" onclick="loadData()">↻ Atualizar gastos</button>
+    <button class="btn" style="background:#1A4FAD;color:white;" onclick="exportarDados()">⬇ Exportar dados</button>
+    <label class="btn" style="background:#1A7A3C;color:white;cursor:pointer;margin:0;">
+      ⬆ Importar dados
+      <input type="file" accept=".json" onchange="importarDados(event)" style="display:none;">
+    </label>
+  </div>
 </header>
 
-<div id="status" class="info">✓ 48 lançamentos carregados!</div>
+<div id="status"></div>
 
 <div class="nav">
-  <div class="nav-tab active" onclick="showPage(&#39;dashboard&#39;)">📊 Dashboard</div>
-  <div class="nav-tab" onclick="showPage(&#39;vendas&#39;)">💰 Lançar Vendas</div>
-  <div class="nav-tab" onclick="showPage(&#39;resultado&#39;)">📈 Resultado</div>
-  <div class="nav-tab" onclick="showPage(&#39;cmv&#39;)">🛒 Controle CMV</div>
+  <div class="nav-tab active" onclick="showPage('dashboard')">📊 Dashboard</div>
+  <div class="nav-tab"        onclick="showPage('vendas')">💰 Lançar Vendas</div>
+  <div class="nav-tab"        onclick="showPage('resultado')">📈 Resultado</div>
+  <div class="nav-tab"        onclick="showPage('cmv')">🛒 Controle CMV</div>
 </div>
 
-<div id="filtros" class="visible">
-  <div><div class="filtro-label">Mês</div><select id="filtro-mes" onchange="renderAll()"><option value="todos">Todos os meses</option><option value="Maio">Maio</option></select></div>
+<div id="filtros">
+  <div><div class="filtro-label">Mês</div><select id="filtro-mes" onchange="renderAll()"></select></div>
   <div><div class="filtro-label">Loja</div>
-    <select id="filtro-loja" onchange="renderAll()"><option value="todas">Todas as lojas</option><option value="Brooklin">Brooklin</option><option value="Mooca">Mooca</option><option value="Pinheiros">Pinheiros</option></select>
+    <select id="filtro-loja" onchange="renderAll()"><option value="todas">Todas as lojas</option></select>
   </div>
 </div>
 
 <!-- DASHBOARD -->
-<main id="page-dashboard" style="display: block;">
+<main id="page-dashboard" style="display:none;">
   <div class="kpis">
-    <div class="kpi"><div class="kpi-label">Total de gastos</div><div class="kpi-value red" id="kpi-total">R$ 48.299,78</div></div>
-    <div class="kpi"><div class="kpi-label">Maior categoria</div><div class="kpi-value sm" id="kpi-cat">Insumos</div></div>
-    <div class="kpi"><div class="kpi-label">Loja com mais gastos</div><div class="kpi-value sm" id="kpi-loja">Brooklin</div></div>
-    <div class="kpi"><div class="kpi-label">Lançamentos no período</div><div class="kpi-value" id="kpi-lanc">48</div></div>
+    <div class="kpi"><div class="kpi-label">Total de gastos</div><div class="kpi-value red" id="kpi-total">—</div></div>
+    <div class="kpi"><div class="kpi-label">Maior categoria</div><div class="kpi-value sm" id="kpi-cat">—</div></div>
+    <div class="kpi"><div class="kpi-label">Loja com mais gastos</div><div class="kpi-value sm" id="kpi-loja">—</div></div>
+    <div class="kpi"><div class="kpi-label">Lançamentos no período</div><div class="kpi-value" id="kpi-lanc">—</div></div>
   </div>
-  <div class="tabs" id="tabs"><button class="tab active" onclick="setTab(&#39;todas&#39;,this)">Consolidado</button><button class="tab" onclick="setTab(&#39;Brooklin&#39;,this)">Brooklin</button><button class="tab" onclick="setTab(&#39;Mooca&#39;,this)">Mooca</button><button class="tab" onclick="setTab(&#39;Pinheiros&#39;,this)">Pinheiros</button></div>
+  <div class="tabs" id="tabs"><button class="tab active" onclick="setTab('todas',this)">Consolidado</button></div>
   <div class="charts">
-    <div class="chart-card"><div class="chart-title">Gastos por divisão</div><div id="chart-divisao"><div class="bar-row">
-        <div class="bar-meta"><span>Insumos</span><span>R$ 20.150,75 (42%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:41.72016932582302%;background:#C84B00"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>RH</span><span>R$ 15.041,45 (31%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:31.14186027348365%;background:#1A7A3C"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>Operacional</span><span>R$ 12.998,48 (27%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:26.91208945465176%;background:#6B21A8"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>Limpeza</span><span>R$ 109,10 (0%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:0.22588094604157616%;background:#1A4FAD"></div></div>
-      </div></div></div>
-    <div class="chart-card"><div class="chart-title">Top subcategorias</div><div id="chart-subdivisao"><div class="bar-row">
-        <div class="bar-meta"><span>Aluguel</span><span>R$ 11.858,65 (25%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:24.55218222526065%;background:#C84B00"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>Proteína</span><span>R$ 9.249,96 (19%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:19.151143131500806%;background:#1A7A3C"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>Insumos</span><span>R$ 7.095,49 (15%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:14.69052239989499%;background:#6B21A8"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>Emprestimo Colaborador</span><span>R$ 4.091,07 (8%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:8.47016280405418%;background:#1A4FAD"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>Benefícios - VT</span><span>R$ 3.651,00 (8%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:7.559040641592983%;background:#8B6914"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>Salário/Folha</span><span>R$ 2.972,40 (6%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:6.154065298019992%;background:#1A7A6A"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>Processos Trabalhistas</span><span>R$ 2.000,00 (4%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:4.140805610294705%;background:#8B1F1F"></div></div>
-      </div><div class="bar-row">
-        <div class="bar-meta"><span>BONUS</span><span>R$ 1.986,98 (4%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:4.113848965771686%;background:#C84B00"></div></div>
-      </div></div></div>
-    <div class="chart-card"><div class="chart-title">Comparativo entre lojas</div><div id="chart-lojas"><div class="lojas-grid"><div class="loja-card-comp brooklin">
-        <div class="loja-name-comp brooklin"><span class="loja-dot" style="background:#1A7A3C"></span>Brooklin</div>
-        <div class="loja-stat"><span>Total</span><span>R$ 31.097,49</span></div>
-        <div class="loja-stat"><span>Participação</span><span>64%</span></div>
-        <div class="loja-stat"><span>Lançamentos</span><span>25</span></div>
-      </div><div class="loja-card-comp mooca">
-        <div class="loja-name-comp mooca"><span class="loja-dot" style="background:#6B21A8"></span>Mooca</div>
-        <div class="loja-stat"><span>Total</span><span>R$ 3.548,38</span></div>
-        <div class="loja-stat"><span>Participação</span><span>7%</span></div>
-        <div class="loja-stat"><span>Lançamentos</span><span>6</span></div>
-      </div><div class="loja-card-comp pinheiros">
-        <div class="loja-name-comp pinheiros"><span class="loja-dot" style="background:#1A4FAD"></span>Pinheiros</div>
-        <div class="loja-stat"><span>Total</span><span>R$ 13.653,91</span></div>
-        <div class="loja-stat"><span>Participação</span><span>28%</span></div>
-        <div class="loja-stat"><span>Lançamentos</span><span>17</span></div>
-      </div></div></div></div>
-    <div class="chart-card"><div class="chart-title">Lançamentos recentes</div><div class="lista" id="lista-recentes"><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">SPAL (COCA)</div>
-          <div class="item-cat">Insumos › Bebidas</div>
-        </div>
-        <div class="item-valor">R$ 552,69</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">JBS (FRIBOI)</div>
-          <div class="item-cat">Insumos › Proteína</div>
-        </div>
-        <div class="item-valor">R$ 3.417,52</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">Q DISTRIBUIDORA (OVOS)</div>
-          <div class="item-cat">Insumos › OVOS</div>
-        </div>
-        <div class="item-valor">R$ 252,00</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">MMFOODS (PÃO BAGUETE)</div>
-          <div class="item-cat">Insumos › Padaria</div>
-        </div>
-        <div class="item-valor">R$ 413,40</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">JBS (FRIBOI)</div>
-          <div class="item-cat">Insumos › Proteína</div>
-        </div>
-        <div class="item-valor">R$ 5.832,44</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">MMFOODS (PÃO BAGUETE)</div>
-          <div class="item-cat">Insumos › Padaria</div>
-        </div>
-        <div class="item-valor">R$ 413,40</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">IFOOD</div>
-          <div class="item-cat">Insumos › ALIM COLABORADOR</div>
-        </div>
-        <div class="item-valor">R$ 154,68</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">ALUGUEL ABRIL 26 (MARIA ESTER)</div>
-          <div class="item-cat">Operacional › Aluguel</div>
-        </div>
-        <div class="item-valor">R$ 5.755,65</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#6B21A8"></span> Mooca</div>
-          <div class="item-desc">Flavio Arana Vicente</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 243,80</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Tue May 05 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">Mercadinho</div>
-          <div class="item-cat">Limpeza › Limpeza</div>
-        </div>
-        <div class="item-valor">R$ 109,10</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Thu May 01 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">Pao de açucar</div>
-          <div class="item-cat">Insumos › Insumos</div>
-        </div>
-        <div class="item-valor">R$ 25,38</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Sun May 03 · <span class="loja-dot" style="background:#6B21A8"></span> Mooca</div>
-          <div class="item-desc">GUILHERME ALVES DA SILVA</div>
-          <div class="item-cat">RH › Diarias </div>
-        </div>
-        <div class="item-valor">R$ 100,00</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Sun May 03 · <span class="loja-dot" style="background:#6B21A8"></span> Mooca</div>
-          <div class="item-desc">HIROTA FOOD</div>
-          <div class="item-cat">Insumos › Insumos</div>
-        </div>
-        <div class="item-valor">R$ 32,18</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">Claudio Francisco de Carvalho Junior</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">Victor Tavares da Silva</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">Bruno Lima Rocha</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">Fernando de Freitas Fernandes Belo</div>
-          <div class="item-cat">RH › BONUS</div>
-        </div>
-        <div class="item-valor">R$ 230,37</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">Claudio Francisco de Carvalho Junior</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">Victor Tavares da Silva</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">Bruno Lima Rocha</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A4FAD"></span> Pinheiros</div>
-          <div class="item-desc">Fernando de Freitas Fernandes Belo</div>
-          <div class="item-cat">RH › BONUS</div>
-        </div>
-        <div class="item-valor">R$ 230,37</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">Lucas Campos Silva</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">Damiana Rosa Neta</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">EVALDO HENRIQUE DA SILVA</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div><div class="item">
-        <div class="item-left">
-          <div class="item-date">Mon May 04 · <span class="loja-dot" style="background:#1A7A3C"></span> Brooklin</div>
-          <div class="item-desc">Francisca leidiane silva</div>
-          <div class="item-cat">RH › Benefícios - VT</div>
-        </div>
-        <div class="item-valor">R$ 275,60</div>
-      </div></div></div>
+    <div class="chart-card"><div class="chart-title">Gastos por divisão</div><div id="chart-divisao"></div></div>
+    <div class="chart-card"><div class="chart-title">Top subcategorias</div><div id="chart-subdivisao"></div></div>
+    <div class="chart-card"><div class="chart-title">Comparativo entre lojas</div><div id="chart-lojas"></div></div>
+    <div class="chart-card"><div class="chart-title">Lançamentos recentes</div><div class="lista" id="lista-recentes"></div></div>
   </div>
 </main>
 
 <!-- VENDAS -->
-<main id="page-vendas" style="display: none;">
+<main id="page-vendas" style="display:none;">
   <div class="vendas-section">
     <div class="vendas-form">
       <h3 id="form-titulo">Lançar vendas do dia</h3>
@@ -457,15 +238,15 @@
           <div class="loja-sub-grid">
             <div class="form-group">
               <div class="form-label">Vendas (R$)</div>
-              <input type="text" class="form-input" id="venda-Brooklin-valor" placeholder="ex: 5.915,33" oninput="calcTicket(&#39;Brooklin&#39;)">
+              <input type="text" class="form-input" id="venda-Brooklin-valor" placeholder="ex: 5.915,33" oninput="calcTicket('Brooklin')">
             </div>
             <div class="form-group">
               <div class="form-label">Qtd pedidos</div>
-              <input type="text" class="form-input" id="venda-Brooklin-qtd" placeholder="ex: 120" oninput="calcTicket(&#39;Brooklin&#39;)">
+              <input type="text" class="form-input" id="venda-Brooklin-qtd" placeholder="ex: 120" oninput="calcTicket('Brooklin')">
             </div>
             <div class="form-group">
               <div class="form-label">Ticket médio</div>
-              <input type="text" class="form-input" id="venda-Brooklin-ticket" placeholder="—" readonly="" style="background:var(--bg2);color:var(--text2);cursor:default;">
+              <input type="text" class="form-input" id="venda-Brooklin-ticket" placeholder="—" readonly style="background:var(--bg2);color:var(--text2);cursor:default;">
             </div>
           </div>
         </div>
@@ -475,15 +256,15 @@
           <div class="loja-sub-grid">
             <div class="form-group">
               <div class="form-label">Vendas (R$)</div>
-              <input type="text" class="form-input" id="venda-Mooca-valor" placeholder="ex: 5.915,33" oninput="calcTicket(&#39;Mooca&#39;)">
+              <input type="text" class="form-input" id="venda-Mooca-valor" placeholder="ex: 5.915,33" oninput="calcTicket('Mooca')">
             </div>
             <div class="form-group">
               <div class="form-label">Qtd pedidos</div>
-              <input type="text" class="form-input" id="venda-Mooca-qtd" placeholder="ex: 120" oninput="calcTicket(&#39;Mooca&#39;)">
+              <input type="text" class="form-input" id="venda-Mooca-qtd" placeholder="ex: 120" oninput="calcTicket('Mooca')">
             </div>
             <div class="form-group">
               <div class="form-label">Ticket médio</div>
-              <input type="text" class="form-input" id="venda-Mooca-ticket" placeholder="—" readonly="" style="background:var(--bg2);color:var(--text2);cursor:default;">
+              <input type="text" class="form-input" id="venda-Mooca-ticket" placeholder="—" readonly style="background:var(--bg2);color:var(--text2);cursor:default;">
             </div>
           </div>
         </div>
@@ -493,15 +274,15 @@
           <div class="loja-sub-grid">
             <div class="form-group">
               <div class="form-label">Vendas (R$)</div>
-              <input type="text" class="form-input" id="venda-Pinheiros-valor" placeholder="ex: 5.915,33" oninput="calcTicket(&#39;Pinheiros&#39;)">
+              <input type="text" class="form-input" id="venda-Pinheiros-valor" placeholder="ex: 5.915,33" oninput="calcTicket('Pinheiros')">
             </div>
             <div class="form-group">
               <div class="form-label">Qtd pedidos</div>
-              <input type="text" class="form-input" id="venda-Pinheiros-qtd" placeholder="ex: 120" oninput="calcTicket(&#39;Pinheiros&#39;)">
+              <input type="text" class="form-input" id="venda-Pinheiros-qtd" placeholder="ex: 120" oninput="calcTicket('Pinheiros')">
             </div>
             <div class="form-group">
               <div class="form-label">Ticket médio</div>
-              <input type="text" class="form-input" id="venda-Pinheiros-ticket" placeholder="—" readonly="" style="background:var(--bg2);color:var(--text2);cursor:default;">
+              <input type="text" class="form-input" id="venda-Pinheiros-ticket" placeholder="—" readonly style="background:var(--bg2);color:var(--text2);cursor:default;">
             </div>
           </div>
         </div>
@@ -515,135 +296,33 @@
 
     <div class="vendas-historico">
       <h3>Histórico de vendas</h3>
-      <div id="historico-lista"><div class="venda-item">
-      <div class="venda-top">
-        <div class="venda-data">2026-05-05 · 120 pedidos total</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="venda-total">R$ 10.081,73</div>
-          <div class="venda-acoes">
-            <button class="btn-edit" onclick="editarVenda(&#39;2026-05-05&#39;)">✏️ Editar</button>
-            <button class="btn-del" onclick="deletarVenda(&#39;2026-05-05&#39;)">✕ Excluir</button>
-          </div>
-        </div>
-      </div>
-      <div class="venda-lojas"><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A7A3C"></span>Brooklin</div>
-        <div class="venda-loja-det">R$ 5.263,07 · 57 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#6B21A8"></span>Mooca</div>
-        <div class="venda-loja-det">R$ 847,79 · 12 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A4FAD"></span>Pinheiros</div>
-        <div class="venda-loja-det">R$ 3.970,87 · 51 pedidos</div>
-      </div></div>
-    </div><div class="venda-item">
-      <div class="venda-top">
-        <div class="venda-data">2026-05-04 · 143 pedidos total</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="venda-total">R$ 11.081,21</div>
-          <div class="venda-acoes">
-            <button class="btn-edit" onclick="editarVenda(&#39;2026-05-04&#39;)">✏️ Editar</button>
-            <button class="btn-del" onclick="deletarVenda(&#39;2026-05-04&#39;)">✕ Excluir</button>
-          </div>
-        </div>
-      </div>
-      <div class="venda-lojas"><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A7A3C"></span>Brooklin</div>
-        <div class="venda-loja-det">R$ 5.344,11 · 63 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A4FAD"></span>Pinheiros</div>
-        <div class="venda-loja-det">R$ 5.737,10 · 80 pedidos</div>
-      </div></div>
-    </div><div class="venda-item">
-      <div class="venda-top">
-        <div class="venda-data">2026-05-03 · 230 pedidos total</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="venda-total">R$ 17.885,86</div>
-          <div class="venda-acoes">
-            <button class="btn-edit" onclick="editarVenda(&#39;2026-05-03&#39;)">✏️ Editar</button>
-            <button class="btn-del" onclick="deletarVenda(&#39;2026-05-03&#39;)">✕ Excluir</button>
-          </div>
-        </div>
-      </div>
-      <div class="venda-lojas"><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A7A3C"></span>Brooklin</div>
-        <div class="venda-loja-det">R$ 7.177,23 · 92 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#6B21A8"></span>Mooca</div>
-        <div class="venda-loja-det">R$ 3.320,11 · 37 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A4FAD"></span>Pinheiros</div>
-        <div class="venda-loja-det">R$ 7.388,52 · 101 pedidos</div>
-      </div></div>
-    </div><div class="venda-item">
-      <div class="venda-top">
-        <div class="venda-data">2026-05-02 · 159 pedidos total</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="venda-total">R$ 13.991,95</div>
-          <div class="venda-acoes">
-            <button class="btn-edit" onclick="editarVenda(&#39;2026-05-02&#39;)">✏️ Editar</button>
-            <button class="btn-del" onclick="deletarVenda(&#39;2026-05-02&#39;)">✕ Excluir</button>
-          </div>
-        </div>
-      </div>
-      <div class="venda-lojas"><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A7A3C"></span>Brooklin</div>
-        <div class="venda-loja-det">R$ 5.596,38 · 58 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#6B21A8"></span>Mooca</div>
-        <div class="venda-loja-det">R$ 2.337,64 · 27 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A4FAD"></span>Pinheiros</div>
-        <div class="venda-loja-det">R$ 6.057,93 · 74 pedidos</div>
-      </div></div>
-    </div><div class="venda-item">
-      <div class="venda-top">
-        <div class="venda-data">2026-05-01 · 157 pedidos total</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="venda-total">R$ 12.671,54</div>
-          <div class="venda-acoes">
-            <button class="btn-edit" onclick="editarVenda(&#39;2026-05-01&#39;)">✏️ Editar</button>
-            <button class="btn-del" onclick="deletarVenda(&#39;2026-05-01&#39;)">✕ Excluir</button>
-          </div>
-        </div>
-      </div>
-      <div class="venda-lojas"><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A7A3C"></span>Brooklin</div>
-        <div class="venda-loja-det">R$ 5.915,33 · 66 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#6B21A8"></span>Mooca</div>
-        <div class="venda-loja-det">R$ 1.859,83 · 21 pedidos</div>
-      </div><div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:#1A4FAD"></span>Pinheiros</div>
-        <div class="venda-loja-det">R$ 4.896,38 · 70 pedidos</div>
-      </div></div>
-    </div></div>
+      <div id="historico-lista"></div>
     </div>
   </div>
 </main>
 
 <!-- CMV -->
-<main id="page-cmv" style="display: none;">
+<main id="page-cmv" style="display:none;">
   <div style="max-width:1100px;">
 
     <!-- KPIs resumo -->
     <div class="kpis" style="margin-bottom:1.5rem;grid-template-columns:repeat(4,1fr);">
-      <div class="kpi"><div class="kpi-label">Vendas da semana</div><div class="kpi-value green" id="cmv-total-vendas">R$ 95.918,89</div></div>
-      <div class="kpi"><div class="kpi-label">Limite 30% (pode gastar)</div><div class="kpi-value amber" id="cmv-limite">R$ 28.775,67</div></div>
-      <div class="kpi"><div class="kpi-label">Total comprado</div><div class="kpi-value" id="cmv-total-comprado">R$ 23.705,70</div></div>
+      <div class="kpi"><div class="kpi-label">Vendas da semana</div><div class="kpi-value green" id="cmv-total-vendas">R$ 0,00</div></div>
+      <div class="kpi"><div class="kpi-label">Limite 30% (pode gastar)</div><div class="kpi-value amber" id="cmv-limite">R$ 0,00</div></div>
+      <div class="kpi"><div class="kpi-label">Total comprado</div><div class="kpi-value" id="cmv-total-comprado">R$ 0,00</div></div>
       <div class="kpi" style="grid-column:span 1;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
           <div>
             <div class="kpi-label">CMV atual</div>
-            <div class="kpi-value" id="cmv-pct-real" style="font-size: 20px; color: var(--green);">24.7%</div>
-            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);margin-top:2px;">meta: máx 30%</div>
-            <div class="cmv-progress" style="margin-top:6px;"><div class="cmv-progress-fill" id="cmv-pct-real-bar" style="width: 82.3811%; background: var(--green);"></div></div>
+            <div class="kpi-value" id="cmv-pct-real" style="font-size:20px;">0%</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);margin-top:2px;">meta: máx 30%</div>
+            <div class="cmv-progress" style="margin-top:6px;"><div class="cmv-progress-fill" id="cmv-pct-real-bar" style="width:0%;background:var(--green)"></div></div>
           </div>
           <div>
             <div class="kpi-label">Limite utilizado</div>
-            <div class="kpi-value" id="cmv-pct-utilizado" style="font-size: 20px; color: var(--green);">82.4%</div>
-            <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);margin-top:2px;" id="cmv-pct-label">Ainda pode gastar R$ 5.069,97</div>
-            <div class="cmv-progress" style="margin-top:6px;"><div class="cmv-progress-fill" id="cmv-pct-bar" style="width: 82.3811%; background: var(--green);"></div></div>
+            <div class="kpi-value" id="cmv-pct-utilizado" style="font-size:20px;">0%</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);margin-top:2px;" id="cmv-pct-label">de 30% disponível</div>
+            <div class="cmv-progress" style="margin-top:6px;"><div class="cmv-progress-fill" id="cmv-pct-bar" style="width:0%;background:var(--green)"></div></div>
           </div>
         </div>
       </div>
@@ -697,7 +376,7 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
         <div class="chart-title" style="margin-bottom:0;">Compras por fornecedor</div>
         <div style="display:flex;gap:8px;align-items:center;">
-          <input type="text" class="form-input" id="novo-fornecedor" placeholder="Novo fornecedor..." style="width:200px;font-size:13px;padding:6px 10px;" onkeydown="if(event.key===&#39;Enter&#39;)cmvAddFornecedor()">
+          <input type="text" class="form-input" id="novo-fornecedor" placeholder="Novo fornecedor..." style="width:200px;font-size:13px;padding:6px 10px;" onkeydown="if(event.key==='Enter')cmvAddFornecedor()">
           <button class="btn-salvar" style="padding:7px 16px;font-size:12px;margin:0;" onclick="cmvAddFornecedor()">+ Adicionar</button>
         </div>
       </div>
@@ -705,162 +384,22 @@
         <table id="cmv-table" style="width:100%;border-collapse:collapse;font-size:13px;min-width:900px;">
           <thead>
             <tr>
-              <th style="text-align:left;padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:&#39;DM Mono&#39;,monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;">Fornecedor</th>
-              <th style="padding:8px 10px;background:#EDFAF3;border-bottom:1px solid var(--border);color:var(--brooklin);font-family:&#39;DM Mono&#39;,monospace;font-size:10px;text-transform:uppercase;">Brooklin</th>
-              <th style="padding:8px 10px;background:#F5EEFF;border-bottom:1px solid var(--border);color:var(--mooca);font-family:&#39;DM Mono&#39;,monospace;font-size:10px;text-transform:uppercase;">Mooca</th>
-              <th style="padding:8px 10px;background:#EFF4FF;border-bottom:1px solid var(--border);color:var(--pinheiros);font-family:&#39;DM Mono&#39;,monospace;font-size:10px;text-transform:uppercase;">Pinheiros</th>
-              <th style="padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:&#39;DM Mono&#39;,monospace;font-size:10px;text-transform:uppercase;">Total</th>
+              <th style="text-align:left;padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;">Fornecedor</th>
+              <th style="padding:8px 10px;background:#EDFAF3;border-bottom:1px solid var(--border);color:var(--brooklin);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;">Brooklin</th>
+              <th style="padding:8px 10px;background:#F5EEFF;border-bottom:1px solid var(--border);color:var(--mooca);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;">Mooca</th>
+              <th style="padding:8px 10px;background:#EFF4FF;border-bottom:1px solid var(--border);color:var(--pinheiros);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;">Pinheiros</th>
+              <th style="padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;">Total</th>
               <th style="padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--border);width:40px;"></th>
             </tr>
           </thead>
-          <tbody id="cmv-tbody">
-    <tr class="cmv-row" id="cmv-tr-MARFRIG">
-      <td class="cmv-fornecedor">MARFRIG</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MARFRIG-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MARFRIG-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MARFRIG-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-MARFRIG">—</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;MARFRIG&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-PMG">
-      <td class="cmv-fornecedor">PMG</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-PMG-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-PMG-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-PMG-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-PMG">—</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;PMG&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-LONDRES">
-      <td class="cmv-fornecedor">LONDRES</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-LONDRES-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-LONDRES-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-LONDRES-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-LONDRES">R$ 5.392,08</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;LONDRES&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-MEGA_G">
-      <td class="cmv-fornecedor">MEGA G</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MEGA G-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MEGA G-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MEGA G-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-MEGA G">R$ 8.298,33</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;MEGA G&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-MMFOODS">
-      <td class="cmv-fornecedor">MMFOODS</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MMFOODS-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MMFOODS-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-MMFOODS-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-MMFOODS">R$ 826,80</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;MMFOODS&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-BUY_FOODS">
-      <td class="cmv-fornecedor">BUY FOODS</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-BUY FOODS-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-BUY FOODS-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-BUY FOODS-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-BUY FOODS">R$ 164,00</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;BUY FOODS&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-ASSA_">
-      <td class="cmv-fornecedor">ASSAÍ</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-ASSAÍ-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-ASSAÍ-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-ASSAÍ-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-ASSAÍ">—</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;ASSAÍ&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-UBER_ML_IFOOD_TENDA">
-      <td class="cmv-fornecedor">UBER/ML/IFOOD/TENDA</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-UBER/ML/IFOOD/TENDA-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-UBER/ML/IFOOD/TENDA-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-UBER/ML/IFOOD/TENDA-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-UBER/ML/IFOOD/TENDA">—</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;UBER/ML/IFOOD/TENDA&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-FREXCO">
-      <td class="cmv-fornecedor">FREXCO</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-FREXCO-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-FREXCO-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-FREXCO-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-FREXCO">R$ 285,07</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;FREXCO&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-3GX">
-      <td class="cmv-fornecedor">3GX</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-3GX-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-3GX-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-3GX-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-3GX">—</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;3GX&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-KATAYAMA">
-      <td class="cmv-fornecedor">KATAYAMA</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-KATAYAMA-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-KATAYAMA-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-KATAYAMA-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-KATAYAMA">—</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;KATAYAMA&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-LIFE_GOURMET">
-      <td class="cmv-fornecedor">LIFE GOURMET</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-LIFE GOURMET-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-LIFE GOURMET-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-LIFE GOURMET-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-LIFE GOURMET">R$ 1.932,00</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;LIFE GOURMET&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-COCA">
-      <td class="cmv-fornecedor">COCA</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-COCA-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-COCA-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-COCA-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-COCA">R$ 1.375,58</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;COCA&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>
-    <tr class="cmv-row" id="cmv-tr-FRIBOI">
-      <td class="cmv-fornecedor">FRIBOI</td>
-      <td style="text-align:center"><input class="cmv-input has-soma" id="cmv-FRIBOI-Brooklin" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-FRIBOI-Mooca" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-FRIBOI-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td class="cmv-total-cell" id="cmv-row-total-FRIBOI">R$ 5.431,84</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor(&#39;FRIBOI&#39;)" title="Remover fornecedor">✕</button>
-      </td>
-    </tr></tbody>
+          <tbody id="cmv-tbody"></tbody>
           <tfoot>
             <tr style="background:var(--bg2);font-weight:600;">
               <td style="padding:10px;border-top:2px solid var(--border);">TOTAL</td>
-              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:&#39;DM Mono&#39;,monospace;" id="cmv-tot-Brooklin">R$ 19.846,02</td>
-              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:&#39;DM Mono&#39;,monospace;" id="cmv-tot-Mooca">R$ 0,00</td>
-              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:&#39;DM Mono&#39;,monospace;" id="cmv-tot-Pinheiros">R$ 3.859,68</td>
-              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:&#39;DM Mono&#39;,monospace;font-size:15px;" id="cmv-tot-geral">R$ 23.705,70</td>
+              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'DM Mono',monospace;" id="cmv-tot-Brooklin">R$ 0,00</td>
+              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'DM Mono',monospace;" id="cmv-tot-Mooca">R$ 0,00</td>
+              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'DM Mono',monospace;" id="cmv-tot-Pinheiros">R$ 0,00</td>
+              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'DM Mono',monospace;font-size:15px;" id="cmv-tot-geral">R$ 0,00</td>
               <td style="padding:10px;border-top:2px solid var(--border);"></td>
             </tr>
           </tfoot>
@@ -869,82 +408,7 @@
     </div>
 
     <!-- CMV por loja -->
-    <div class="lucro-grid" id="cmv-cards-lojas"><div class="lucro-card">
-      <div class="lucro-card-title"><span class="loja-dot" style="background:#1A7A3C"></span>Brooklin</div>
-      <div class="lucro-row"><span>Vendas semana</span><span style="color:var(--green)">R$ 42.798,75</span></div>
-      <div class="lucro-row"><span>Limite 30%</span><span style="color:var(--amber)">R$ 12.839,63</span></div>
-      <div class="lucro-row"><span>Comprado</span><span style="color:var(--red)">R$ 19.846,02</span></div>
-      <div class="lucro-row"><span>Ainda pode gastar</span><span style="color:var(--green)">R$ 0,00</span></div>
-      <hr class="lucro-divider">
-      <hr class="lucro-divider" style="margin:6px 0;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
-        <div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);margin-bottom:3px;">CMV ATUAL</div>
-          <div style="font-size:18px;font-weight:700;color:var(--red);">46.4%</div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);">meta: máx 30%</div>
-          <div class="cmv-progress" style="margin-top:4px;"><div class="cmv-progress-fill" style="width:100%;background:var(--red)"></div></div>
-        </div>
-        <div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);margin-bottom:3px;">LIMITE USADO</div>
-          <div style="font-size:18px;font-weight:700;color:var(--red);">154.6%</div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);">de 30% dispon.</div>
-          <div class="cmv-progress" style="margin-top:4px;"><div class="cmv-progress-fill" style="width:100%;background:var(--red)"></div></div>
-        </div>
-      </div>
-      <div style="margin-top:6px;">
-        <span class="cmv-badge over">✕ Acima do limite</span>
-      </div>
-    </div><div class="lucro-card">
-      <div class="lucro-card-title"><span class="loja-dot" style="background:#6B21A8"></span>Mooca</div>
-      <div class="lucro-row"><span>Vendas semana</span><span style="color:var(--green)">R$ 14.620,30</span></div>
-      <div class="lucro-row"><span>Limite 30%</span><span style="color:var(--amber)">R$ 4.386,09</span></div>
-      <div class="lucro-row"><span>Comprado</span><span style="color:var(--red)">R$ 0,00</span></div>
-      <div class="lucro-row"><span>Ainda pode gastar</span><span style="color:var(--green)">R$ 4.386,09</span></div>
-      <hr class="lucro-divider">
-      <hr class="lucro-divider" style="margin:6px 0;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
-        <div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);margin-bottom:3px;">CMV ATUAL</div>
-          <div style="font-size:18px;font-weight:700;color:var(--green);">0.0%</div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);">meta: máx 30%</div>
-          <div class="cmv-progress" style="margin-top:4px;"><div class="cmv-progress-fill" style="width:0%;background:var(--green)"></div></div>
-        </div>
-        <div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);margin-bottom:3px;">LIMITE USADO</div>
-          <div style="font-size:18px;font-weight:700;color:var(--green);">0.0%</div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);">de 30% dispon.</div>
-          <div class="cmv-progress" style="margin-top:4px;"><div class="cmv-progress-fill" style="width:0%;background:var(--green)"></div></div>
-        </div>
-      </div>
-      <div style="margin-top:6px;">
-        <span class="cmv-badge ok">✓ Dentro do limite</span>
-      </div>
-    </div><div class="lucro-card">
-      <div class="lucro-card-title"><span class="loja-dot" style="background:#1A4FAD"></span>Pinheiros</div>
-      <div class="lucro-row"><span>Vendas semana</span><span style="color:var(--green)">R$ 38.499,84</span></div>
-      <div class="lucro-row"><span>Limite 30%</span><span style="color:var(--amber)">R$ 11.549,95</span></div>
-      <div class="lucro-row"><span>Comprado</span><span style="color:var(--red)">R$ 3.859,68</span></div>
-      <div class="lucro-row"><span>Ainda pode gastar</span><span style="color:var(--green)">R$ 7.690,27</span></div>
-      <hr class="lucro-divider">
-      <hr class="lucro-divider" style="margin:6px 0;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
-        <div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);margin-bottom:3px;">CMV ATUAL</div>
-          <div style="font-size:18px;font-weight:700;color:var(--green);">10.0%</div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);">meta: máx 30%</div>
-          <div class="cmv-progress" style="margin-top:4px;"><div class="cmv-progress-fill" style="width:33.41728173415786%;background:var(--green)"></div></div>
-        </div>
-        <div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);margin-bottom:3px;">LIMITE USADO</div>
-          <div style="font-size:18px;font-weight:700;color:var(--green);">33.4%</div>
-          <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--text2);">de 30% dispon.</div>
-          <div class="cmv-progress" style="margin-top:4px;"><div class="cmv-progress-fill" style="width:33.417281734157854%;background:var(--green)"></div></div>
-        </div>
-      </div>
-      <div style="margin-top:6px;">
-        <span class="cmv-badge ok">✓ Dentro do limite</span>
-      </div>
-    </div></div>
+    <div class="lucro-grid" id="cmv-cards-lojas"></div>
 
     <div style="margin-top:1rem;display:flex;gap:10px;">
       <button class="btn-salvar" onclick="cmvSalvar()">✓ Salvar semana</button>
@@ -1327,6 +791,27 @@ function cmvRenderTabela_inner(){
     </tr>`).join('');
 }
 
+function cmvRestoreState(){
+  try{
+    const state=JSON.parse(localStorage.getItem('cmv_state')||'{}');
+    if(!Object.keys(state).length) return;
+    ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+      const el=document.getElementById(`cmv-venda-${l}`);
+      if(el&&state[`venda-${l}`]) el.value=state[`venda-${l}`];
+    });
+    fornecedores.forEach(f=>{
+      ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+        const el=document.getElementById(`cmv-${f}-${l}`);
+        if(el&&state[`${f}-${l}`]) el.value=state[`${f}-${l}`];
+      });
+    });
+    const de=document.getElementById('cmv-de');
+    const ate=document.getElementById('cmv-ate');
+    if(de&&state['cmv-de']) de.value=state['cmv-de'];
+    if(ate&&state['cmv-ate']) ate.value=state['cmv-ate'];
+  }catch(e){}
+}
+
 function cmvRenderTabela(){
   cmvRenderTabela_inner();
   cmvRestoreState();
@@ -1470,37 +955,43 @@ function cmvCalc(){
 }
 
 function cmvSalvar(){
-  const de=document.getElementById('cmv-de').value;
-  const ate=document.getElementById('cmv-ate').value;
-  if(!de||!ate){alert('Informe o período da semana.');return;}
+  try{
+    const de=document.getElementById('cmv-de').value;
+    const ate=document.getElementById('cmv-ate').value;
+    if(!de||!ate){alert('Informe o período da semana.');return;}
 
-  const entry={de,ate,vendas:{},compras:{}};
-  ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-    entry.vendas[l]=parseBR(document.getElementById(`cmv-venda-${l}`).value)||0;
-  });
-  fornecedores.forEach(f=>{
-    entry.compras[f]={};
+    const entry={de,ate,vendas:{},compras:{}};
     ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-      entry.compras[f][l]=parseBR(document.getElementById(`cmv-${f}-${l}`).value)||0;
+      entry.vendas[l]=parseBR(document.getElementById(`cmv-venda-${l}`).value)||0;
     });
-  });
+    fornecedores.forEach(f=>{
+      entry.compras[f]={};
+      ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+        const el=document.getElementById(`cmv-${f}-${l}`);
+        entry.compras[f][l]=el?parseBR(el.value)||0:0;
+      });
+    });
 
-  if(cmvEditando!==null){
-    cmvSemanas[cmvEditando]=entry;
-    cmvEditando=null;
-  } else {
-    cmvSemanas.unshift(entry);
+    if(cmvEditando!==null){
+      cmvSemanas[cmvEditando]=entry;
+      cmvEditando=null;
+    } else {
+      cmvSemanas.unshift(entry);
+    }
+    localStorage.setItem('cmv_semanas',JSON.stringify(cmvSemanas));
+    cmvRenderHistorico();
+    alert('✓ Semana salva!');
+  }catch(e){
+    alert('Erro ao salvar: '+e.message);
   }
-  localStorage.setItem('cmv_semanas',JSON.stringify(cmvSemanas));
-  cmvRenderHistorico();
-  alert('✓ Semana salva!');
 }
 
 function cmvNovo(){
   cmvEditando=null;
   ['Brooklin','Mooca','Pinheiros'].forEach(l=>document.getElementById(`cmv-venda-${l}`).value='');
-  FORNECEDORES.forEach(f=>['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-    document.getElementById(`cmv-${f}-${l}`).value='';
+  fornecedores.forEach(f=>['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+    const el=document.getElementById(`cmv-${f}-${l}`);
+    if(el) el.value='';
   }));
   cmvCalc();
 }
@@ -1513,7 +1004,7 @@ function cmvEditar(idx){
   ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
     document.getElementById(`cmv-venda-${l}`).value=(s.vendas[l]||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
   });
-  FORNECEDORES.forEach(f=>['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+  fornecedores.forEach(f=>['Brooklin','Mooca','Pinheiros'].forEach(l=>{
     const v=(s.compras[f]||{})[l]||0;
     document.getElementById(`cmv-${f}-${l}`).value=v>0?v.toLocaleString('pt-BR',{minimumFractionDigits:2}):'';
   }));
@@ -1533,7 +1024,7 @@ function cmvRenderHistorico(){
   if(!cmvSemanas.length){el.innerHTML='<div class="empty-state">Nenhuma semana salva ainda.</div>';return;}
   el.innerHTML=cmvSemanas.map((s,i)=>{
     const totVendas=Object.values(s.vendas).reduce((a,b)=>a+b,0);
-    const totComprado=FORNECEDORES.reduce((a,f)=>a+Object.values(s.compras[f]||{}).reduce((x,y)=>x+y,0),0);
+    const totComprado=fornecedores.reduce((a,f)=>a+Object.values(s.compras[f]||{}).reduce((x,y)=>x+y,0),0);
     const pctVal=totVendas>0?(totComprado/totVendas)*100:0;
     const status=pctVal<=28?'ok':pctVal<=30?'warn':'over';
     return `<div class="cmv-semana-item">
@@ -1550,12 +1041,49 @@ function cmvRenderHistorico(){
   }).join('');
 }
 
+
+function exportarDados(){
+  const dados = {
+    vendas: JSON.parse(localStorage.getItem('vendas_sanduicheria') || '[]'),
+    cmv_semanas: JSON.parse(localStorage.getItem('cmv_semanas') || '[]'),
+    cmv_state: JSON.parse(localStorage.getItem('cmv_state') || '{}'),
+    cmv_fornecedores: JSON.parse(localStorage.getItem('cmv_fornecedores') || 'null'),
+    exportado_em: new Date().toLocaleString('pt-BR')
+  };
+  const blob = new Blob([JSON.stringify(dados, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'dados_sanduicheria_' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importarDados(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const dados = JSON.parse(e.target.result);
+      if(dados.vendas)           localStorage.setItem('vendas_sanduicheria', JSON.stringify(dados.vendas));
+      if(dados.cmv_semanas)      localStorage.setItem('cmv_semanas', JSON.stringify(dados.cmv_semanas));
+      if(dados.cmv_state)        localStorage.setItem('cmv_state', JSON.stringify(dados.cmv_state));
+      if(dados.cmv_fornecedores) localStorage.setItem('cmv_fornecedores', JSON.stringify(dados.cmv_fornecedores));
+      alert('✓ Dados importados com sucesso! A página será recarregada.');
+      location.reload();
+    } catch(err) {
+      alert('Erro ao importar. Verifique se o arquivo é válido.');
+    }
+  };
+  reader.readAsText(file);
+}
+
 // Init
 document.getElementById('venda-data').value=new Date().toISOString().split('T')[0];
 showPage('dashboard');
 loadData();
 cmvInit();
 </script>
-
-
-</body></html>
+</body>
+</html>
