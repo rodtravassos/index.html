@@ -1103,8 +1103,7 @@ const FORNECEDORES_DEFAULT=['MARFRIG','PMG','LONDRES','MEGA G','MMFOODS','BUY FO
 let fornecedores=JSON.parse(localStorage.getItem('cmv_fornecedores')||'null')||[...FORNECEDORES_DEFAULT];
 function saveFornecedores(){ localStorage.setItem('cmv_fornecedores',JSON.stringify(fornecedores)); }
 const CMV_META=0.30;
-let cmvSemanas=[{"de": "2026-04-27", "ate": "2026-05-03", "vendas": {"Brooklin": 42798.75, "Mooca": 14620.3, "Pinheiros": 38499.84}, "compras": {"MARFRIG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "PMG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LONDRES": {"Brooklin": 5392.08, "Mooca": 0, "Pinheiros": 0}, "MEGA G": {"Brooklin": 6483.49, "Mooca": 0, "Pinheiros": 1814.84}, "MMFOODS": {"Brooklin": 413.4, "Mooca": 0, "Pinheiros": 413.4}, "BUY FOODS": {"Brooklin": 164.0, "Mooca": 0, "Pinheiros": 164.0}, "ASSAÍ": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "UBER/ML/IFOOD/TENDA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "FREXCO": {"Brooklin": 285.07, "Mooca": 0, "Pinheiros": 0}, "3GX": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "KATAYAMA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LIFE GOURMET": {"Brooklin": 966.0, "Mooca": 322.0, "Pinheiros": 966.0}, "COCA": {"Brooklin": 874.14, "Mooca": 0, "Pinheiros": 501.44}, "FRIBOI": {"Brooklin": 5431.84, "Mooca": 0, "Pinheiros": 0}}}];
-localStorage.setItem('cmv_semanas',JSON.stringify(cmvSemanas));if(s){const a=JSON.parse(s);if(a.length>0)return a;}const d=[{"de": "2026-04-27", "ate": "2026-05-03", "vendas": {"Brooklin": 42798.75, "Mooca": 14620.3, "Pinheiros": 38499.84}, "compras": {"MARFRIG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "PMG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LONDRES": {"Brooklin": 5392.08, "Mooca": 0, "Pinheiros": 0}, "MEGA G": {"Brooklin": 6483.49, "Mooca": 0, "Pinheiros": 1814.84}, "MMFOODS": {"Brooklin": 413.4, "Mooca": 0, "Pinheiros": 413.4}, "BUY FOODS": {"Brooklin": 164.0, "Mooca": 0, "Pinheiros": 164.0}, "ASSAÍ": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "UBER/ML/IFOOD/TENDA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "FREXCO": {"Brooklin": 285.07, "Mooca": 0, "Pinheiros": 0}, "3GX": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "KATAYAMA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LIFE GOURMET": {"Brooklin": 966.0, "Mooca": 322.0, "Pinheiros": 966.0}, "COCA": {"Brooklin": 874.14, "Mooca": 0, "Pinheiros": 501.44}, "FRIBOI": {"Brooklin": 5431.84, "Mooca": 0, "Pinheiros": 0}}}];localStorage.setItem('cmv_semanas',JSON.stringify(d));return d;})();, "compras": {"MARFRIG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "PMG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LONDRES": {"Brooklin": 5392.08, "Mooca": 0, "Pinheiros": 0}, "MEGA G": {"Brooklin": 6483.49, "Mooca": 0, "Pinheiros": 1814.84}, "MMFOODS": {"Brooklin": 413.4, "Mooca": 0, "Pinheiros": 413.4}, "BUY FOODS": {"Brooklin": 164.0, "Mooca": 0, "Pinheiros": 164.0}, "ASSAÍ": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "UBER/ML/IFOOD/TENDA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "FREXCO": {"Brooklin": 285.07, "Mooca": 0, "Pinheiros": 0}, "3GX": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "KATAYAMA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LIFE GOURMET": {"Brooklin": 966.0, "Mooca": 322.0, "Pinheiros": 966.0}, "COCA": {"Brooklin": 874.14, "Mooca": 0, "Pinheiros": 501.44}, "FRIBOI": {"Brooklin": 5431.84, "Mooca": 0, "Pinheiros": 0}}}]; localStorage.setItem('cmv_semanas',JSON.stringify(cmvSemanas)); }
+let cmvSemanas=(function(){const s=localStorage.getItem('cmv_semanas');if(s){const a=JSON.parse(s);if(a.length>0)return a;}const d=[{"de": "2026-04-27", "ate": "2026-05-03", "vendas": {"Brooklin": 42798.75, "Mooca": 14620.3, "Pinheiros": 38499.84}, "compras": {"MARFRIG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "PMG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LONDRES": {"Brooklin": 5392.08, "Mooca": 0, "Pinheiros": 0}, "MEGA G": {"Brooklin": 6483.49, "Mooca": 0, "Pinheiros": 1814.84}, "MMFOODS": {"Brooklin": 413.4, "Mooca": 0, "Pinheiros": 413.4}, "BUY FOODS": {"Brooklin": 164.0, "Mooca": 0, "Pinheiros": 164.0}, "ASSAÍ": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "UBER/ML/IFOOD/TENDA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "FREXCO": {"Brooklin": 285.07, "Mooca": 0, "Pinheiros": 0}, "3GX": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "KATAYAMA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LIFE GOURMET": {"Brooklin": 966.0, "Mooca": 322.0, "Pinheiros": 966.0}, "COCA": {"Brooklin": 874.14, "Mooca": 0, "Pinheiros": 501.44}, "FRIBOI": {"Brooklin": 5431.84, "Mooca": 0, "Pinheiros": 0}}}];localStorage.setItem('cmv_semanas',JSON.stringify(d));return d;})();
 let cmvEditando=null;
 (function(){
   const s=localStorage.getItem('cmv_state');
@@ -1409,23 +1408,43 @@ function exportarDados(){
 
 function importarDados(event){
   const file = event.target.files[0];
-  if(!file) return;
+  if(!file){ alert('Nenhum arquivo selecionado.'); return; }
   const reader = new FileReader();
   reader.onload = function(e){
     try {
       const dados = JSON.parse(e.target.result);
-      if(dados.vendas)           localStorage.setItem('vendas_sanduicheria', JSON.stringify(dados.vendas));
-      if(dados.cmv_semanas)      localStorage.setItem('cmv_semanas', JSON.stringify(dados.cmv_semanas));
-      if(dados.cmv_state)        localStorage.setItem('cmv_state', JSON.stringify(dados.cmv_state));
-      if(dados.cmv_fornecedores) localStorage.setItem('cmv_fornecedores', JSON.stringify(dados.cmv_fornecedores));
-      if(dados.imp_meses) localStorage.setItem('imp_meses', JSON.stringify(dados.imp_meses));
-      alert('✓ Dados importados com sucesso! A página será recarregada.');
-      location.reload();
+      let count = 0;
+      if(dados.vendas && dados.vendas.length > 0){
+        localStorage.setItem('vendas_sanduicheria', JSON.stringify(dados.vendas));
+        count++;
+      }
+      if(dados.cmv_semanas && dados.cmv_semanas.length > 0){
+        localStorage.setItem('cmv_semanas', JSON.stringify(dados.cmv_semanas));
+        count++;
+      }
+      if(dados.cmv_state && Object.keys(dados.cmv_state).length > 0){
+        localStorage.setItem('cmv_state', JSON.stringify(dados.cmv_state));
+        count++;
+      }
+      if(dados.cmv_fornecedores){
+        localStorage.setItem('cmv_fornecedores', JSON.stringify(dados.cmv_fornecedores));
+      }
+      if(dados.imp_meses && dados.imp_meses.length > 0){
+        localStorage.setItem('imp_meses', JSON.stringify(dados.imp_meses));
+        count++;
+      }
+      if(count === 0){
+        alert('Arquivo importado mas nenhum dado encontrado.');
+        return;
+      }
+      alert('✓ Dados importados! A página será recarregada.');
+      setTimeout(()=>{ window.location.reload(true); }, 300);
     } catch(err) {
-      alert('Erro ao importar. Verifique se o arquivo é válido.');
+      alert('Erro ao importar: ' + err.message);
     }
   };
-  reader.readAsText(file);
+  reader.onerror = function(){ alert('Erro ao ler o arquivo.'); };
+  reader.readAsText(file, 'UTF-8');
 }
 
 // Init
