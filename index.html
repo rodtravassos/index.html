@@ -191,6 +191,7 @@
   <div class="nav-tab"        onclick="showPage('vendas')">💰 Lançar Vendas</div>
   <div class="nav-tab"        onclick="showPage('resultado')">📈 Resultado</div>
   <div class="nav-tab"        onclick="showPage('cmv')">🛒 Controle CMV</div>
+  <div class="nav-tab"        onclick="showPage('impostos')">📋 Impostos</div>
 </div>
 
 <div id="filtros">
@@ -208,6 +209,27 @@
     <div class="kpi"><div class="kpi-label">Loja com mais gastos</div><div class="kpi-value sm" id="kpi-loja">—</div></div>
     <div class="kpi"><div class="kpi-label">Lançamentos no período</div><div class="kpi-value" id="kpi-lanc">—</div></div>
   </div>
+
+  <!-- KPIs de vendas -->
+  <div class="kpis" style="margin-top:0.75rem;">
+    <div class="kpi" style="border-left:3px solid var(--green);">
+      <div class="kpi-label">Total vendas do mês</div>
+      <div class="kpi-value green" id="kpi-vendas-mes">—</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid var(--brooklin);">
+      <div class="kpi-label">Brooklin</div>
+      <div class="kpi-value" id="kpi-vendas-Brooklin" style="color:var(--brooklin);">—</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid var(--mooca);">
+      <div class="kpi-label">Mooca</div>
+      <div class="kpi-value" id="kpi-vendas-Mooca" style="color:var(--mooca);">—</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid var(--pinheiros);">
+      <div class="kpi-label">Pinheiros</div>
+      <div class="kpi-value" id="kpi-vendas-Pinheiros" style="color:var(--pinheiros);">—</div>
+    </div>
+  </div>
+
   <div class="tabs" id="tabs"><button class="tab active" onclick="setTab('todas',this)">Consolidado</button></div>
   <div class="charts">
     <div class="chart-card"><div class="chart-title">Gastos por divisão</div><div id="chart-divisao"></div></div>
@@ -423,6 +445,85 @@
   </div>
 </main>
 
+<!-- IMPOSTOS -->
+<main id="page-impostos" style="display:none;">
+  <div style="max-width:900px;">
+
+    <!-- Seletor de mês -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <div style="font-size:15px;font-weight:600;">Controle de Impostos</div>
+      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+        <div>
+          <div class="filtro-label">Mês de referência</div>
+          <select id="imp-mes" class="form-input" style="width:160px;" onchange="impCarregar()">
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+        </div>
+        <div>
+          <div class="filtro-label">Ano</div>
+          <select id="imp-ano" class="form-input" style="width:100px;" onchange="impCarregar()">
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+          </select>
+        </div>
+        <button class="btn-salvar" style="margin:0;padding:8px 20px;" onclick="impSalvar()">✓ Salvar</button>
+        <button class="btn-cancelar" style="margin:0;" onclick="impNovo()">+ Novo mês</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpis kpis-3" style="margin-bottom:1.5rem;">
+      <div class="kpi"><div class="kpi-label">Total de impostos</div><div class="kpi-value red" id="imp-kpi-total">R$ 0,00</div></div>
+      <div class="kpi"><div class="kpi-label">% médio sobre faturamento</div><div class="kpi-value amber" id="imp-kpi-pct">0,0%</div></div>
+      <div class="kpi"><div class="kpi-label">Faturamento total (nota)</div><div class="kpi-value green" id="imp-kpi-fat">R$ 0,00</div></div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="chart-card" style="margin-bottom:1.5rem;">
+      <div class="chart-title">Lançamento por imposto e loja</div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:600px;">
+          <thead>
+            <tr>
+              <th style="text-align:left;padding:10px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;">Imposto</th>
+              <th style="text-align:center;padding:10px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;">Venc.</th>
+              <th style="text-align:center;padding:10px;background:#EDFAF3;border-bottom:1px solid var(--border);color:var(--brooklin);font-family:'DM Mono',monospace;font-size:10px;">Brooklin</th>
+              <th style="text-align:center;padding:10px;background:#EFF4FF;border-bottom:1px solid var(--border);color:var(--pinheiros);font-family:'DM Mono',monospace;font-size:10px;">Pinheiros</th>
+              <th style="text-align:center;padding:10px;background:#F5EEFF;border-bottom:1px solid var(--border);color:var(--mooca);font-family:'DM Mono',monospace;font-size:10px;">Mooca</th>
+              <th style="text-align:center;padding:10px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;">Total</th>
+            </tr>
+          </thead>
+          <tbody id="imp-tbody"></tbody>
+          <tfoot>
+            <tr style="background:var(--bg2);font-weight:600;">
+              <td style="padding:10px;border-top:2px solid var(--border);" colspan="2">TOTAL</td>
+              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'DM Mono',monospace;" id="imp-tot-Brooklin">R$ 0,00</td>
+              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'DM Mono',monospace;" id="imp-tot-Pinheiros">R$ 0,00</td>
+              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'DM Mono',monospace;" id="imp-tot-Mooca">R$ 0,00</td>
+              <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'DM Mono',monospace;font-size:15px;" id="imp-tot-geral">R$ 0,00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Cards por loja -->
+    <div class="lucro-grid" id="imp-cards"></div>
+
+    <!-- Histórico -->
+    <div class="chart-card" style="margin-top:1.5rem;">
+      <div class="chart-title">Histórico de meses</div>
+      <div id="imp-historico"></div>
+    </div>
+  </div>
+</main>
+
 <!-- RESULTADO -->
 <main id="page-resultado" style="display:none;">
   <div class="kpis kpis-3" style="margin-bottom:1.5rem;">
@@ -441,7 +542,7 @@ const LOJA_CLASS ={Brooklin:'brooklin',Mooca:'mooca',Pinheiros:'pinheiros'};
 const DIV_COLORS=['#C84B00','#1A7A3C','#6B21A8','#1A4FAD','#8B6914','#1A7A6A','#8B1F1F'];
 
 let allData=[],currentTab='todas',currentPage='dashboard',editingData=null;
-let vendas=JSON.parse(localStorage.getItem('vendas_sanduicheria')||'[]');
+let vendas=(function(){const s=localStorage.getItem('vendas_sanduicheria');if(s){const a=JSON.parse(s);if(a.length>0)return a;}const d=[{"data": "2026-05-05", "Brooklin": {"valor": 5263.07, "qtd": 57}, "Mooca": {"valor": 847.79, "qtd": 12}, "Pinheiros": {"valor": 3970.87, "qtd": 51}}, {"data": "2026-05-04", "Brooklin": {"valor": 5344.11, "qtd": 63}, "Mooca": {"valor": 0, "qtd": 0}, "Pinheiros": {"valor": 5737.1, "qtd": 80}}, {"data": "2026-05-03", "Brooklin": {"valor": 7177.23, "qtd": 92}, "Mooca": {"valor": 3320.11, "qtd": 37}, "Pinheiros": {"valor": 7388.52, "qtd": 101}}, {"data": "2026-05-02", "Brooklin": {"valor": 5596.38, "qtd": 58}, "Mooca": {"valor": 2337.64, "qtd": 27}, "Pinheiros": {"valor": 6057.93, "qtd": 74}}, {"data": "2026-05-01", "Brooklin": {"valor": 5915.33, "qtd": 66}, "Mooca": {"valor": 1859.83, "qtd": 21}, "Pinheiros": {"valor": 4896.38, "qtd": 70}}];localStorage.setItem('vendas_sanduicheria',JSON.stringify(d));return d;})();
 
 const fmt=v=>'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const pct=(v,t)=>t>0?Math.round((v/t)*100)+'%':'0%';
@@ -449,13 +550,14 @@ const setStatus=(msg,type)=>{const e=document.getElementById('status');e.classNa
 
 function showPage(page){
   currentPage=page;
-  ['dashboard','vendas','resultado','cmv'].forEach(p=>
+  ['dashboard','vendas','resultado','cmv','impostos'].forEach(p=>
     document.getElementById(`page-${p}`).style.display=p===page?'block':'none');
   document.querySelectorAll('.nav-tab').forEach((t,i)=>
-    t.classList.toggle('active',['dashboard','vendas','resultado','cmv'][i]===page));
+    t.classList.toggle('active',['dashboard','vendas','resultado','cmv','impostos'][i]===page));
   if(page==='vendas')    renderHistorico();
   if(page==='resultado') renderResultado();
   if(page==='cmv')       cmvRenderHistorico();
+  if(page==='impostos')  impInit();
 }
 
 async function loadData(){
@@ -541,12 +643,14 @@ function groupBy(data,key){
   return map;
 }
 
-function renderBars(elId,map,total,colors){
+function renderBars(elId,map,total,colors,totalVendas){
   document.getElementById(elId).innerHTML=
     Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([label,val],i)=>{
       const p=total>0?(val/total)*100:0;
+      const pVendas=totalVendas>0?(val/totalVendas)*100:0;
+      const vendaTag=totalVendas>0?`<span style="font-family:'DM Mono',monospace;font-size:10px;background:var(--bg2);color:var(--text2);padding:1px 6px;border-radius:99px;margin-left:6px;" title="% das vendas">${pVendas.toFixed(1)}% vendas</span>`:'';
       return `<div class="bar-row">
-        <div class="bar-meta"><span>${label}</span><span>${fmt(val)} (${pct(val,total)})</span></div>
+        <div class="bar-meta"><span>${label}${vendaTag}</span><span>${fmt(val)} (${pct(val,total)})</span></div>
         <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,p)}%;background:${colors[i%colors.length]}"></div></div>
       </div>`;
     }).join('');
@@ -561,9 +665,38 @@ function renderDashboard(){
   const byLoja=groupBy(data,'loja'),topLoja=Object.entries(byLoja).sort((a,b)=>b[1]-a[1])[0];
   document.getElementById('kpi-loja').textContent=topLoja?topLoja[0]:'—';
 
-  renderBars('chart-divisao',byDiv,total,DIV_COLORS);
+  // KPIs de vendas do mês
+  const mes=getMes(), lojaFil=getLoja();
+  const vendasMes=vendas.filter(v=>{
+    if(mes==='todos') return true;
+    const d=new Date(v.data+'T12:00:00');
+    return d.toLocaleString('pt-BR',{month:'long'}).toLowerCase()===mes.toLowerCase();
+  });
+  const lojasFiltradas=lojaFil==='todas'?LOJAS:[lojaFil];
+  const totalVendasMes=vendasMes.reduce((s,v)=>s+lojasFiltradas.reduce((x,l)=>x+((v[l]||{}).valor||0),0),0);
+  const kvm=document.getElementById('kpi-vendas-mes');
+  if(kvm) kvm.textContent=fmt(totalVendasMes);
+  LOJAS.forEach(l=>{
+    const el=document.getElementById(`kpi-vendas-${l}`);
+    if(el){
+      const vl=lojaFil==='todas'||lojaFil===l
+        ? vendasMes.reduce((s,v)=>s+((v[l]||{}).valor||0),0) : 0;
+      el.textContent=fmt(vl);
+    }
+  });
+
+  // Total de vendas do período filtrado
+  const vendasPeriodo=vendas.filter(v=>{
+    if(mes==='todos') return true;
+    const d=new Date(v.data+'T12:00:00');
+    return d.toLocaleString('pt-BR',{month:'long'}).toLowerCase()===mes.toLowerCase();
+  });
+  const lojasFil=lojaFil==='todas'?LOJAS:[lojaFil];
+  const totalVendasPeriodo=vendasPeriodo.reduce((s,v)=>s+lojasFil.reduce((x,l)=>x+((v[l]||{}).valor||0),0),0);
+
+  renderBars('chart-divisao',byDiv,total,DIV_COLORS,totalVendasPeriodo);
   const bySub=groupBy(data,'subdivisao');
-  renderBars('chart-subdivisao',Object.fromEntries(Object.entries(bySub).sort((a,b)=>b[1]-a[1]).slice(0,8)),total,DIV_COLORS);
+  renderBars('chart-subdivisao',Object.fromEntries(Object.entries(bySub).sort((a,b)=>b[1]-a[1]).slice(0,8)),total,DIV_COLORS,totalVendasPeriodo);
 
   // Comparativo na ordem correta
   const lojasOrdenadas=LOJAS.filter(l=>byLoja[l]!==undefined);
@@ -768,13 +901,223 @@ function renderResultado(){
 }
 
 
+
+// ===================== IMPOSTOS =====================
+const IMP_LINHAS = [
+  { key: 'vendas',    label: 'Vendas',                  venc: null, isFat: false, isVendas: true },
+  { key: 'fat_nota',  label: 'Faturamento Nota',         venc: null, isFat: true  },
+  { key: 'icms',      label: 'ICMS SP',                  venc: 20   },
+  { key: 'pis',       label: 'PIS e Confins',            venc: 25   },
+  { key: 'simples',   label: 'Simples Nacional',         venc: 20   },
+  { key: 'inss',      label: 'INSS',                     venc: 20   },
+  { key: 'fgts',      label: 'FGTS',                     venc: 20   },
+  { key: 'difal',     label: 'DIFAL',                    venc: 31   },
+  { key: 'irpj',      label: 'IRPJ/CSLL (Trimestral)',   venc: 31   },
+];
+const IMP_IMPOSTOS = IMP_LINHAS.filter(l => !l.isVendas && !l.isFat);
+let impMeses = JSON.parse(localStorage.getItem('imp_meses') || '[]');
+let impEditando = null;
+
+function impSaveLocal(){ localStorage.setItem('imp_meses', JSON.stringify(impMeses)); }
+
+function impGetKey(){
+  return document.getElementById('imp-mes').value + '-' + document.getElementById('imp-ano').value;
+}
+
+function impInit(){
+  // setar mês atual
+  const hoje = new Date();
+  document.getElementById('imp-mes').value = String(hoje.getMonth()+1).padStart(2,'0');
+  document.getElementById('imp-ano').value = String(hoje.getFullYear());
+  impRenderTabela();
+  impCarregar();
+  impRenderHistorico();
+}
+
+function impRenderTabela(){
+  const tbody = document.getElementById('imp-tbody');
+  tbody.innerHTML = IMP_LINHAS.map(l => {
+    const isTotal = !l.isVendas && !l.isFat;
+    const bg = l.isVendas ? 'background:var(--bg2);' : l.isFat ? 'background:#FFFBEB;' : '';
+    const inputs = ['Brooklin','Pinheiros','Mooca'].map(loja =>
+      isTotal
+        ? `<td style="text-align:center;${bg}"><input class="cmv-input" id="imp-${l.key}-${loja}" type="text" placeholder="0,00" oninput="impCalc();impSaveState2()" style="width:110px;"></td>`
+        : `<td style="text-align:center;${bg}"><input class="cmv-input" id="imp-${l.key}-${loja}" type="text" placeholder="0,00" oninput="impCalc();impSaveState2()" style="width:110px;background:${l.isFat?'#FFFBEB':'var(--bg2)'};"></td>`
+    ).join('');
+    return `<tr style="${bg}">
+      <td style="padding:8px 10px;font-weight:${l.isFat||l.isVendas?'600':'400'};${bg}">${l.label}${l.venc?' <span style=\'font-family:DM Mono,monospace;font-size:10px;color:var(--text2);\'>(dia ${l.venc})</span>':''}</td>
+      <td style="text-align:center;padding:8px 10px;font-family:DM Mono,monospace;font-size:11px;color:var(--text2);${bg}">${l.venc||'—'}</td>
+      ${inputs}
+      <td style="text-align:center;padding:8px 10px;font-family:DM Mono,monospace;font-size:12px;font-weight:600;${bg}" id="imp-row-total-${l.key}">—</td>
+    </tr>`;
+  }).join('');
+}
+
+function impCalc(){
+  const totLojas = {Brooklin:0, Pinheiros:0, Mooca:0};
+  const fatLojas = {Brooklin:0, Pinheiros:0, Mooca:0};
+  let totGeral = 0, fatGeral = 0;
+
+  IMP_LINHAS.forEach(l => {
+    let rowTotal = 0;
+    ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+      const el = document.getElementById(`imp-${l.key}-${loja}`);
+      const v = parseBR(el ? el.value : '') || 0;
+      rowTotal += v;
+      if (!l.isVendas && !l.isFat) { totLojas[loja] += v; totGeral += v; }
+      if (l.isFat) { fatLojas[loja] += v; fatGeral += v; }
+    });
+    const rowEl = document.getElementById(`imp-row-total-${l.key}`);
+    if (rowEl) rowEl.textContent = rowTotal > 0 ? fmt(rowTotal) : '—';
+  });
+
+  ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+    const el = document.getElementById(`imp-tot-${loja}`);
+    if(el) el.textContent = fmt(totLojas[loja]);
+  });
+  const tg = document.getElementById('imp-tot-geral');
+  if(tg) tg.textContent = fmt(totGeral);
+
+  // KPIs
+  const pctMedio = fatGeral > 0 ? (totGeral/fatGeral)*100 : 0;
+  const kt = document.getElementById('imp-kpi-total');
+  const kp = document.getElementById('imp-kpi-pct');
+  const kf = document.getElementById('imp-kpi-fat');
+  if(kt) kt.textContent = fmt(totGeral);
+  if(kp) { kp.textContent = pctMedio.toFixed(1)+'%'; kp.className='kpi-value '+(pctMedio<=10?'green':pctMedio<=15?'amber':'red'); }
+  if(kf) kf.textContent = fmt(fatGeral);
+
+  // Cards por loja
+  const cards = document.getElementById('imp-cards');
+  if(cards) cards.innerHTML = ['Brooklin','Pinheiros','Mooca'].map(loja => {
+    const cor = LOJA_COLORS[loja]||'#888';
+    const imp = totLojas[loja];
+    const fat = fatLojas[loja];
+    const pct2 = fat>0?(imp/fat)*100:0;
+    const pctColor = pct2<=10?'var(--green)':pct2<=15?'var(--amber)':'var(--red)';
+    return `<div class="lucro-card">
+      <div class="lucro-card-title"><span class="loja-dot" style="background:${cor}"></span>${loja}</div>
+      <div class="lucro-row"><span>Faturamento nota</span><span style="color:var(--green)">${fmt(fat)}</span></div>
+      <div class="lucro-row"><span>Total impostos</span><span style="color:var(--red)">${fmt(imp)}</span></div>
+      <hr class="lucro-divider">
+      <div class="lucro-total-row"><span>% sobre fat.</span><span style="color:${pctColor}">${pct2.toFixed(2)}%</span></div>
+      <div class="cmv-progress" style="margin-top:8px;"><div class="cmv-progress-fill" style="width:${Math.min(100,pct2*4)}%;background:${pctColor}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function impSaveState2(){
+  try{
+    const state = {};
+    IMP_LINHAS.forEach(l => ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+      const el = document.getElementById(`imp-${l.key}-${loja}`);
+      if(el && el.value) state[`${l.key}-${loja}`] = el.value;
+    }));
+    state['_key'] = impGetKey();
+    localStorage.setItem('imp_state', JSON.stringify(state));
+  }catch(e){}
+}
+
+function impCarregar(){
+  impRenderTabela();
+  const key = impGetKey();
+  // Tentar carregar do histórico
+  const mes = impMeses.find(m => m.key === key);
+  if(mes){
+    IMP_LINHAS.forEach(l => ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+      const el = document.getElementById(`imp-${l.key}-${loja}`);
+      if(el) el.value = (mes.dados[l.key]||{})[loja] > 0 ? String((mes.dados[l.key]||{})[loja]).replace('.',',') : '';
+    }));
+  }
+  impCalc();
+}
+
+function impSalvar(){
+  const key = impGetKey();
+  const mesNome = document.getElementById('imp-mes').options[document.getElementById('imp-mes').selectedIndex].text;
+  const ano = document.getElementById('imp-ano').value;
+  const dados = {};
+  IMP_LINHAS.forEach(l => {
+    dados[l.key] = {};
+    ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+      const el = document.getElementById(`imp-${l.key}-${loja}`);
+      dados[l.key][loja] = parseBR(el ? el.value : '') || 0;
+    });
+  });
+  const entry = { key, label: `${mesNome} ${ano}`, dados };
+  const idx = impMeses.findIndex(m => m.key === key);
+  if(idx >= 0) impMeses[idx] = entry; else impMeses.unshift(entry);
+  impSaveLocal();
+  impRenderHistorico();
+  alert('✓ Impostos salvos!');
+}
+
+function impNovo(){
+  impRenderTabela();
+  impCalc();
+}
+
+function impEditar(key){
+  const mes = impMeses.find(m => m.key === key);
+  if(!mes) return;
+  const [m, a] = key.split('-');
+  document.getElementById('imp-mes').value = m;
+  document.getElementById('imp-ano').value = a;
+  impCarregar();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function impDeletar(key){
+  if(!confirm('Remover este mês?')) return;
+  impMeses = impMeses.filter(m => m.key !== key);
+  impSaveLocal();
+  impRenderHistorico();
+}
+
+function impRenderHistorico(){
+  const el = document.getElementById('imp-historico');
+  if(!el) return;
+  if(!impMeses.length){ el.innerHTML='<div class="empty-state">Nenhum mês salvo ainda.</div>'; return; }
+  el.innerHTML = impMeses.map(m => {
+    const totImp = Object.entries(m.dados).filter(([k])=>IMP_IMPOSTOS.find(l=>l.key===k))
+      .reduce((s,[,v])=>s+Object.values(v).reduce((a,b)=>a+b,0),0);
+    const totFat = Object.values(m.dados['fat_nota']||{}).reduce((a,b)=>a+b,0);
+    const pct2 = totFat>0?(totImp/totFat)*100:0;
+    const status = pct2<=10?'ok':pct2<=15?'warn':'over';
+    return `<div class="cmv-semana-item">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;">${m.label}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px;">Fat: ${fmt(totFat)} · Impostos: ${fmt(totImp)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="cmv-badge ${status}">${pct2.toFixed(1)}% do fat.</span>
+        <button class="btn-edit" onclick="impEditar('${m.key}')">✏️ Editar</button>
+        <button class="btn-del"  onclick="impDeletar('${m.key}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 // ===================== CMV =====================
 const FORNECEDORES_DEFAULT=['MARFRIG','PMG','LONDRES','MEGA G','MMFOODS','BUY FOODS','ASSAÍ','UBER/ML/IFOOD/TENDA','FREXCO','3GX','KATAYAMA','LIFE GOURMET','COCA','FRIBOI'];
 let fornecedores=JSON.parse(localStorage.getItem('cmv_fornecedores')||'null')||[...FORNECEDORES_DEFAULT];
 function saveFornecedores(){ localStorage.setItem('cmv_fornecedores',JSON.stringify(fornecedores)); }
 const CMV_META=0.30;
-let cmvSemanas=JSON.parse(localStorage.getItem('cmv_semanas')||'[]');
+let cmvSemanas=[{"de": "2026-04-27", "ate": "2026-05-03", "vendas": {"Brooklin": 42798.75, "Mooca": 14620.3, "Pinheiros": 38499.84}, "compras": {"MARFRIG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "PMG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LONDRES": {"Brooklin": 5392.08, "Mooca": 0, "Pinheiros": 0}, "MEGA G": {"Brooklin": 6483.49, "Mooca": 0, "Pinheiros": 1814.84}, "MMFOODS": {"Brooklin": 413.4, "Mooca": 0, "Pinheiros": 413.4}, "BUY FOODS": {"Brooklin": 164.0, "Mooca": 0, "Pinheiros": 164.0}, "ASSAÍ": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "UBER/ML/IFOOD/TENDA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "FREXCO": {"Brooklin": 285.07, "Mooca": 0, "Pinheiros": 0}, "3GX": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "KATAYAMA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LIFE GOURMET": {"Brooklin": 966.0, "Mooca": 322.0, "Pinheiros": 966.0}, "COCA": {"Brooklin": 874.14, "Mooca": 0, "Pinheiros": 501.44}, "FRIBOI": {"Brooklin": 5431.84, "Mooca": 0, "Pinheiros": 0}}}];
+localStorage.setItem('cmv_semanas',JSON.stringify(cmvSemanas));if(s){const a=JSON.parse(s);if(a.length>0)return a;}const d=[{"de": "2026-04-27", "ate": "2026-05-03", "vendas": {"Brooklin": 42798.75, "Mooca": 14620.3, "Pinheiros": 38499.84}, "compras": {"MARFRIG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "PMG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LONDRES": {"Brooklin": 5392.08, "Mooca": 0, "Pinheiros": 0}, "MEGA G": {"Brooklin": 6483.49, "Mooca": 0, "Pinheiros": 1814.84}, "MMFOODS": {"Brooklin": 413.4, "Mooca": 0, "Pinheiros": 413.4}, "BUY FOODS": {"Brooklin": 164.0, "Mooca": 0, "Pinheiros": 164.0}, "ASSAÍ": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "UBER/ML/IFOOD/TENDA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "FREXCO": {"Brooklin": 285.07, "Mooca": 0, "Pinheiros": 0}, "3GX": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "KATAYAMA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LIFE GOURMET": {"Brooklin": 966.0, "Mooca": 322.0, "Pinheiros": 966.0}, "COCA": {"Brooklin": 874.14, "Mooca": 0, "Pinheiros": 501.44}, "FRIBOI": {"Brooklin": 5431.84, "Mooca": 0, "Pinheiros": 0}}}];localStorage.setItem('cmv_semanas',JSON.stringify(d));return d;})();, "compras": {"MARFRIG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "PMG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LONDRES": {"Brooklin": 5392.08, "Mooca": 0, "Pinheiros": 0}, "MEGA G": {"Brooklin": 6483.49, "Mooca": 0, "Pinheiros": 1814.84}, "MMFOODS": {"Brooklin": 413.4, "Mooca": 0, "Pinheiros": 413.4}, "BUY FOODS": {"Brooklin": 164.0, "Mooca": 0, "Pinheiros": 164.0}, "ASSAÍ": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "UBER/ML/IFOOD/TENDA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "FREXCO": {"Brooklin": 285.07, "Mooca": 0, "Pinheiros": 0}, "3GX": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "KATAYAMA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LIFE GOURMET": {"Brooklin": 966.0, "Mooca": 322.0, "Pinheiros": 966.0}, "COCA": {"Brooklin": 874.14, "Mooca": 0, "Pinheiros": 501.44}, "FRIBOI": {"Brooklin": 5431.84, "Mooca": 0, "Pinheiros": 0}}}]; localStorage.setItem('cmv_semanas',JSON.stringify(cmvSemanas)); }
 let cmvEditando=null;
+(function(){
+  const s=localStorage.getItem('cmv_state');
+  if(!s||Object.keys(JSON.parse(s)).length===0){
+    localStorage.setItem('cmv_state',JSON.stringify({"cmv-de": "2026-04-27", "cmv-ate": "2026-05-03", "venda-Brooklin": "42798,75", "venda-Mooca": "14620,30", "venda-Pinheiros": "38499,84", "LONDRES-Brooklin": "5392,08", "MEGA G-Brooklin": "6483,49", "MEGA G-Pinheiros": "1814,84", "MMFOODS-Brooklin": "413,40", "MMFOODS-Pinheiros": "413,40", "BUY FOODS-Brooklin": "164,00", "BUY FOODS-Pinheiros": "164,00", "FREXCO-Brooklin": "285,07", "LIFE GOURMET-Brooklin": "966,00", "LIFE GOURMET-Mooca": "322,00", "LIFE GOURMET-Pinheiros": "966,00", "COCA-Brooklin": "874,14", "COCA-Pinheiros": "501,44", "FRIBOI-Brooklin": "5431,84"}));
+  }
+})();
+(function(){
+  const existing=JSON.parse(localStorage.getItem('cmv_state')||'{}');
+  if(!existing['cmv-de']){
+    localStorage.setItem('cmv_state',JSON.stringify({"cmv-de": "2026-04-27", "cmv-ate": "2026-05-03", "venda-Brooklin": "42798,75", "venda-Mooca": "14620,30", "venda-Pinheiros": "38499,84", "LONDRES-Brooklin": "5392,08", "MEGA G-Brooklin": "6483,49", "MEGA G-Pinheiros": "1814,84", "MMFOODS-Brooklin": "413,40", "MMFOODS-Pinheiros": "413,40", "BUY FOODS-Brooklin": "164,00", "BUY FOODS-Pinheiros": "164,00", "FREXCO-Brooklin": "285,07", "LIFE GOURMET-Brooklin": "966,00", "LIFE GOURMET-Mooca": "322,00", "LIFE GOURMET-Pinheiros": "966,00", "COCA-Brooklin": "874,14", "COCA-Pinheiros": "501,44", "FRIBOI-Brooklin": "5431,84"}));
+  }
+})();
 
 function cmvRenderTabela_inner(){
   const tbody=document.getElementById('cmv-tbody');
@@ -1043,9 +1386,11 @@ function cmvRenderHistorico(){
 
 
 function exportarDados(){
+  try{
   const dados = {
     vendas: JSON.parse(localStorage.getItem('vendas_sanduicheria') || '[]'),
     cmv_semanas: JSON.parse(localStorage.getItem('cmv_semanas') || '[]'),
+    imp_meses: JSON.parse(localStorage.getItem('imp_meses') || '[]'),
     cmv_state: JSON.parse(localStorage.getItem('cmv_state') || '{}'),
     cmv_fornecedores: JSON.parse(localStorage.getItem('cmv_fornecedores') || 'null'),
     exportado_em: new Date().toLocaleString('pt-BR')
@@ -1053,10 +1398,13 @@ function exportarDados(){
   const blob = new Blob([JSON.stringify(dados, null, 2)], {type: 'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
+  document.body.appendChild(a);
   a.href = url;
   a.download = 'dados_sanduicheria_' + new Date().toISOString().split('T')[0] + '.json';
   a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
+  }catch(e){ alert('Erro ao exportar: '+e.message); }
 }
 
 function importarDados(event){
@@ -1070,6 +1418,7 @@ function importarDados(event){
       if(dados.cmv_semanas)      localStorage.setItem('cmv_semanas', JSON.stringify(dados.cmv_semanas));
       if(dados.cmv_state)        localStorage.setItem('cmv_state', JSON.stringify(dados.cmv_state));
       if(dados.cmv_fornecedores) localStorage.setItem('cmv_fornecedores', JSON.stringify(dados.cmv_fornecedores));
+      if(dados.imp_meses) localStorage.setItem('imp_meses', JSON.stringify(dados.imp_meses));
       alert('✓ Dados importados com sucesso! A página será recarregada.');
       location.reload();
     } catch(err) {
