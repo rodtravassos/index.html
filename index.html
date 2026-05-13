@@ -583,7 +583,7 @@ function processData(json){
         kSub=findKey(s,'subdivis'),kValor=findKey(s,'valor (r','valor');
 
   allData=json.map(r=>({
-    data:      String(r[kData]||'').substring(0,10),
+    data:      (function(d){ try{ const dt=new Date(d); if(!isNaN(dt)) return dt.toISOString().split('T')[0]; } catch(e){} return String(d).substring(0,10); })(r[kData]||''),
     mes:       String(r[kMes] ||'').trim(),
     loja:      String(r[kLoja]||'').trim(),
     desc:      String(r[kDesc]||''),
