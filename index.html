@@ -622,8 +622,7 @@ function processData(json){
 
   const meses=[...new Set(allData.map(r=>r.mes).filter(Boolean))];
   const selMes=document.getElementById('filtro-mes');
-  selMes.innerHTML='<option value="todos">Todos os meses</option>'+
-    meses.map(m=>`<option value="${m}">${m}</option>`).join('');
+  selMes.innerHTML=meses.map(m=>`<option value="${m}">${m}</option>`).join('');
   if(meses.length) selMes.value=meses[meses.length-1];
 
   const selLoja=document.getElementById('filtro-loja');
@@ -717,7 +716,7 @@ function renderDashboard(){
   const totalVendasPeriodo=vendasPeriodo.reduce((s,v)=>s+lojasFil.reduce((x,l)=>x+((v[l]||{}).valor||0),0),0);
 
   renderBars('chart-divisao',byDiv,total,DIV_COLORS,totalVendasPeriodo);
-  renderPizza(byDiv,total);
+  const totalPizza=Object.values(byDiv).reduce((a,b)=>a+b,0); renderPizza(byDiv,totalPizza,totalVendasPeriodo);
   const bySub=groupBy(data,'subdivisao');
   renderBars('chart-subdivisao',Object.fromEntries(Object.entries(bySub).sort((a,b)=>b[1]-a[1]).slice(0,8)),total,DIV_COLORS,totalVendasPeriodo);
 
@@ -749,7 +748,7 @@ function renderDashboard(){
     }).join('');
 }
 
-function renderPizza(map, total){
+function renderPizza(map, total, totalVendas){
   const canvas = document.getElementById('pizza-chart');
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -759,7 +758,7 @@ function renderPizza(map, total){
   const cx = size/2, cy = size/2, r = size/2 - 8, ri = r * 0.55;
 
   const entries = Object.entries(map).sort((a,b)=>b[1]-a[1]);
-  const colors = ['#0084F4','#00C48C','#FF647C','#FFA26B','#7B61FF','#00D4FF','#FF9F43'];
+  const colors = DIV_COLORS;
 
   ctx.clearRect(0, 0, size, size);
 
@@ -797,7 +796,7 @@ function renderPizza(map, total){
   // Legenda
   const leg = document.getElementById('pizza-legenda');
   leg.innerHTML = entries.map(([label, val], i) => {
-    const p = total > 0 ? ((val/total)*100).toFixed(1) : '0';
+    const p = totalVendas > 0 ? ((val/totalVendas)*100).toFixed(1) : ((val/total)*100).toFixed(1);
     return `<div class="pizza-leg-item">
       <span class="pizza-dot" style="background:${colors[i%colors.length]}"></span>
       <span class="pizza-leg-label">${label}</span>
