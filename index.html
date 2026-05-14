@@ -317,6 +317,99 @@ select:focus{border-color:var(--blue);}
   .span2{grid-column:span 1;}
   .loja-inputs,.loja-sub-grid{grid-template-columns:1fr;}
 }
+
+@media(max-width:640px){
+  /* TOPBAR mobile */
+  .topbar{padding:0 1rem;height:auto;min-height:56px;flex-wrap:wrap;gap:8px;padding-top:10px;padding-bottom:10px;}
+  .page-title{font-size:16px;}
+  .topbar-actions{gap:6px;}
+  .btn{font-size:11px;padding:6px 10px;}
+  .topbar-filters{flex-wrap:wrap;gap:6px;}
+  select{font-size:12px;padding:6px 8px;}
+
+  /* CONTENT */
+  .content{padding:1rem;}
+
+  /* KPI STRIP */
+  .kpi-strip{grid-template-columns:repeat(2,1fr);gap:0.75rem;}
+  .kpi-card{padding:1rem;}
+  .kpi-icon{font-size:22px;margin-bottom:6px;}
+  .kpi-value{font-size:17px;}
+  .kpi-value.sm{font-size:13px;}
+
+  /* VENDAS STRIP */
+  .vendas-strip{grid-template-columns:repeat(2,1fr);gap:0.75rem;}
+  .venda-mini{padding:0.75rem;}
+  .venda-mini-dot{width:36px;height:36px;font-size:16px;}
+  .venda-mini-val{font-size:14px;}
+
+  /* TABS */
+  .tabs{overflow-x:auto;width:100%;-webkit-overflow-scrolling:touch;}
+  .tab{white-space:nowrap;font-size:11px;padding:5px 12px;}
+
+  /* CHART CARDS */
+  .chart-grid,.chart-grid-3{grid-template-columns:1fr;}
+  .chart-card{padding:1rem;}
+  .chart-title{font-size:12px;}
+
+  /* PIZZA */
+  .pizza-wrap{flex-direction:column;align-items:center;gap:1rem;}
+  #pizza-chart{width:160px !important;height:160px !important;}
+
+  /* BARRAS */
+  .bar-meta{flex-wrap:wrap;gap:4px;}
+  .bar-badges{flex-wrap:wrap;}
+  .badge-desp,.badge-vend{font-size:9px;padding:1px 5px;}
+
+  /* LOJA CARDS */
+  .lojas-grid{grid-template-columns:1fr;}
+
+  /* LISTA RECENTES */
+  .lista{max-height:260px;}
+  .item-desc{font-size:12px;}
+
+  /* RESULTADO */
+  .lucro-grid{grid-template-columns:1fr;}
+
+  /* VENDAS FORM */
+  .vendas-section{max-width:100%;}
+  .loja-inputs{grid-template-columns:1fr;}
+  .loja-sub-grid{grid-template-columns:1fr 1fr;}
+  .form-date-row{grid-template-columns:1fr;}
+  .btn-salvar{width:100%;text-align:center;}
+  .btn-cancelar{width:100%;margin-left:0;margin-top:6px;}
+
+  /* CMV */
+  .kpi-strip[style*="repeat(4"]{grid-template-columns:repeat(2,1fr);}
+
+  /* LOGIN */
+  #login-screen > div{padding:2rem 1.5rem;margin:1rem;}
+
+  /* MOBILE NAV BOTTOM */
+  .mobile-nav{display:flex !important;}
+}
+
+/* BOTTOM NAV para mobile */
+.mobile-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:white;border-top:1.5px solid #E4E8EF;
+  padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+  justify-content:space-around;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.08);
+}
+.mobile-nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;padding:4px 12px;border-radius:10px;
+  color:#6B7A99;font-size:10px;font-weight:700;transition:all 0.2s;
+}
+.mobile-nav-item.active{color:#1E2A4A;}
+.mobile-nav-item span:first-child{font-size:20px;}
+
+/* Espaço para bottom nav no mobile */
+@media(max-width:640px){
+  .content{padding-bottom:80px;}
+}
 </style>
 </head>
 <body>
@@ -369,6 +462,32 @@ select:focus{border-color:var(--blue);}
     </div>
   </div>
 </div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav" id="mobile-nav">
+  <div class="mobile-nav-item active" onclick="showPage('dashboard');setMobileNav(this)">
+    <span>📊</span><span>Dashboard</span>
+  </div>
+  <div class="mobile-nav-item" onclick="showPage('vendas');setMobileNav(this)">
+    <span>💰</span><span>Vendas</span>
+  </div>
+  <div class="mobile-nav-item" onclick="showPage('resultado');setMobileNav(this)">
+    <span>📈</span><span>Resultado</span>
+  </div>
+  <div class="mobile-nav-item" onclick="showPage('cmv');setMobileNav(this)">
+    <span>🛒</span><span>CMV</span>
+  </div>
+  <div class="mobile-nav-item" onclick="showPage('impostos');setMobileNav(this)">
+    <span>📋</span><span>Impostos</span>
+  </div>
+</nav>
+
+<script>
+function setMobileNav(el){
+  document.querySelectorAll('.mobile-nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
 
 <script>
   const SENHA = 'paulistinha2026';
