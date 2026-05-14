@@ -911,15 +911,48 @@ function renderDashboard(){
 
   // Comparativo na ordem correta
   const lojasOrdenadas=LOJAS.filter(l=>byLoja[l]!==undefined);
-  document.getElementById('chart-lojas').innerHTML='<div class="lojas-grid">'+
+  // vendas do mês filtrado para saúde financeira
+  const vendasMesChart=vendas.filter(v=>{
+    if(mes==='todos') return true;
+    const d=new Date(v.data+'T12:00:00');
+    return d.toLocaleString('pt-BR',{month:'long'}).toLowerCase()===mes.toLowerCase();
+  });
+
+  document.getElementById('chart-lojas').innerHTML=
+    '<div class="lojas-grid" style="margin-bottom:12px;">'+
     lojasOrdenadas.map(nome=>{
       const val=byLoja[nome]||0,cls=LOJA_CLASS[nome]||'',cor=LOJA_COLORS[nome]||'#888';
       const count=data.filter(r=>r.loja===nome).length;
-      return `<div class="loja-card-comp ${cls}">
-        <div class="loja-name-comp ${cls}"><span class="loja-dot" style="background:${cor}"></span>${nome}</div>
-        <div class="loja-stat"><span>Total</span><span>${fmt(val)}</span></div>
-        <div class="loja-stat"><span>Participação</span><span>${pct(val,total)}</span></div>
+      const pctLoja=total>0?((val/total)*100).toFixed(1):'0';
+      return `<div class="loja-card" style="border-top:3px solid ${cor};">
+        <div class="loja-name ${cls}"><span class="loja-dot" style="background:${cor}"></span>${nome}</div>
+        <div class="loja-valor">${fmt(val)}</div>
+        <div class="loja-stat"><span>Participação</span><span>${pctLoja}%</span></div>
+        <div class="bar-track" style="margin:6px 0 8px;"><div class="bar-fill" style="width:${pctLoja}%;background:${cor};height:4px;"></div></div>
         <div class="loja-stat"><span>Lançamentos</span><span>${count}</span></div>
+      </div>`;
+    }).join('')+'</div>'+
+
+    '<div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Saúde financeira</div>'+
+    '<div class="lojas-grid">'+
+    lojasOrdenadas.map(nome=>{
+      const gastoLoja=byLoja[nome]||0;
+      const cor=LOJA_COLORS[nome]||'#888';
+      const cls=LOJA_CLASS[nome]||'';
+      const vendaLoja=vendasMesChart.reduce((s,v)=>s+((v[nome]||{}).valor||0),0);
+      const lucro=vendaLoja-gastoLoja;
+      const margem=vendaLoja>0?(lucro/vendaLoja)*100:0;
+      const margemColor=margem>15?'#007A57':margem>5?'#B07A00':'#CC2233';
+      const margemBg=margem>15?'#E6FAF5':margem>5?'#FFF8E6':'#FFF0F2';
+      return `<div class="loja-card" style="border-top:3px solid ${cor};">
+        <div class="loja-name ${cls}"><span class="loja-dot" style="background:${cor}"></span>${nome}</div>
+        <div class="loja-stat"><span>Vendas</span><span style="color:#00C48C;font-family:'JetBrains Mono',monospace;">${fmt(vendaLoja)}</span></div>
+        <div class="loja-stat"><span>Gastos</span><span style="color:#FF647C;font-family:'JetBrains Mono',monospace;">${fmt(gastoLoja)}</span></div>
+        <div style="height:1px;background:var(--border);margin:8px 0;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;font-weight:800;color:var(--text);">${fmt(lucro)}</span>
+          <span style="font-size:10px;font-weight:700;background:${margemBg};color:${margemColor};padding:3px 8px;border-radius:99px;">${margem.toFixed(1)}% margem</span>
+        </div>
       </div>`;
     }).join('')+'</div>';
 
