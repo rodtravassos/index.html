@@ -809,10 +809,33 @@ function processData(json){
     `<button class="tab active" onclick="setTab('todas',this)">Consolidado</button>`+
     lojasOrdenadas.map(l=>`<button class="tab" onclick="setTab('${l}',this)">${l}</button>`).join('');
 
-  const meses=[...new Set(allData.map(r=>r.mes).filter(Boolean))];
+  // Meses da planilha
+  const mesesPlanilha=[...new Set(allData.map(r=>r.mes).filter(Boolean))];
+
+  // Meses das vendas manuais
+  const MESES_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const mesesVendas=[...new Set(vendas.map(v=>{
+    const d=new Date(v.data+'T12:00:00');
+    return MESES_PT[d.getMonth()].charAt(0).toUpperCase()+MESES_PT[d.getMonth()].slice(1);
+  }))];
+
+  // Mês atual sempre presente
+  const hoje=new Date();
+  const mesAtual=MESES_PT[hoje.getMonth()].charAt(0).toUpperCase()+MESES_PT[hoje.getMonth()].slice(1);
+
+  // Unir todos e ordenar por ordem do calendário
+  const todosMeses=[...new Set([...mesesPlanilha,...mesesVendas,mesAtual])];
+  todosMeses.sort((a,b)=>{
+    const ia=MESES_PT.indexOf(a.toLowerCase());
+    const ib=MESES_PT.indexOf(b.toLowerCase());
+    return ia-ib;
+  });
+
   const selMes=document.getElementById('filtro-mes');
-  selMes.innerHTML=meses.map(m=>`<option value="${m}">${m}</option>`).join('');
-  if(meses.length) selMes.value=meses[meses.length-1];
+  selMes.innerHTML=todosMeses.map(m=>`<option value="${m}">${m}</option>`).join('');
+  // Selecionar mês atual por padrão
+  if(todosMeses.includes(mesAtual)) selMes.value=mesAtual;
+  else if(todosMeses.length) selMes.value=todosMeses[todosMeses.length-1];
 
   const selLoja=document.getElementById('filtro-loja');
   selLoja.innerHTML='<option value="todas">Todas as lojas</option>'+
