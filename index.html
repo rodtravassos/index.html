@@ -1144,29 +1144,57 @@ function deletarVenda(data){
 function renderHistorico(){
   const el=document.getElementById('historico-lista');
   if(!vendas.length){el.innerHTML='<div class="empty-state">Nenhuma venda lançada ainda.</div>';return;}
-  el.innerHTML=vendas.map(v=>{
-    const totalValor=LOJAS.reduce((s,l)=>s+((v[l]||{}).valor||0),0);
-    const totalQtd  =LOJAS.reduce((s,l)=>s+((v[l]||{}).qtd  ||0),0);
-    const lojasHtml=LOJAS.filter(l=>(v[l]||{}).valor>0||(v[l]||{}).qtd>0).map(l=>{
-      const ld=v[l]||{};
-      const cor=LOJA_COLORS[l];
-      return `<div class="venda-loja">
-        <div class="venda-loja-nome"><span class="loja-dot" style="background:${cor}"></span>${l}</div>
-        <div class="venda-loja-det">${fmt(ld.valor||0)}${ld.qtd?` · ${ld.qtd} pedidos`:''}</div>
-      </div>`;
-    }).join('');
-    return `<div class="venda-item">
-      <div class="venda-top">
-        <div class="venda-data">${v.data}${totalQtd?` · ${totalQtd} pedidos total`:''}</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="venda-total">${fmt(totalValor)}</div>
-          <div class="venda-acoes">
-            <button class="btn-edit" onclick="editarVenda('${v.data}')">✏️ Editar</button>
-            <button class="btn-del"  onclick="deletarVenda('${v.data}')">✕ Excluir</button>
+
+  const MESES_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+  // Agrupar por mês/ano
+  const grupos={};
+  vendas.forEach(v=>{
+    const d=new Date(v.data+'T12:00:00');
+    const chave=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    const label=MESES_PT[d.getMonth()].charAt(0).toUpperCase()+MESES_PT[d.getMonth()].slice(1)+' '+d.getFullYear();
+    if(!grupos[chave]) grupos[chave]={label,vendas:[]};
+    grupos[chave].vendas.push(v);
+  });
+
+  // Ordenar grupos do mais recente para o mais antigo
+  const chavesOrdenadas=Object.keys(grupos).sort((a,b)=>b.localeCompare(a));
+
+  el.innerHTML=chavesOrdenadas.map(chave=>{
+    const grupo=grupos[chave];
+    const totalMes=grupo.vendas.reduce((s,v)=>s+LOJAS.reduce((x,l)=>x+((v[l]||{}).valor||0),0),0);
+    const itens=grupo.vendas.map(v=>{
+      const totalValor=LOJAS.reduce((s,l)=>s+((v[l]||{}).valor||0),0);
+      const totalQtd  =LOJAS.reduce((s,l)=>s+((v[l]||{}).qtd  ||0),0);
+      const lojasHtml=LOJAS.filter(l=>(v[l]||{}).valor>0||(v[l]||{}).qtd>0).map(l=>{
+        const ld=v[l]||{};
+        const cor=LOJA_COLORS[l];
+        return `<div class="venda-loja">
+          <div class="venda-loja-nome"><span class="loja-dot" style="background:${cor}"></span>${l}</div>
+          <div class="venda-loja-det">${fmt(ld.valor||0)}${ld.qtd?` · ${ld.qtd} pedidos`:''}</div>
+        </div>`;
+      }).join('');
+      return `<div class="venda-item">
+        <div class="venda-top">
+          <div class="venda-data">${v.data}${totalQtd?` · ${totalQtd} pedidos total`:''}</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="venda-total">${fmt(totalValor)}</div>
+            <div class="venda-acoes">
+              <button class="btn-edit" onclick="editarVenda('${v.data}')">✏️ Editar</button>
+              <button class="btn-del"  onclick="deletarVenda('${v.data}')">✕ Excluir</button>
+            </div>
           </div>
         </div>
+        <div class="venda-lojas">${lojasHtml}</div>
+      </div>`;
+    }).join('');
+
+    return `<div style="margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 8px;border-bottom:2px solid var(--border);margin-bottom:4px;">
+        <div style="font-size:13px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:0.06em;">${grupo.label}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--green);">${fmt(totalMes)}</div>
       </div>
-      <div class="venda-lojas">${lojasHtml}</div>
+      ${itens}
     </div>`;
   }).join('');
 }
