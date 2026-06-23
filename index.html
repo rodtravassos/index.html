@@ -738,6 +738,56 @@ function setMobileNav(el){
 
 <script>
 
+/* ===== Sincronização com a nuvem (backend Node na Vercel + Supabase) =====
+   O navegador passa a ser apenas um cache local. A fonte da verdade é o
+   banco no Supabase, que tem backup automático. Se a nuvem estiver fora do ar
+   ou sem internet, o painel continua funcionando com os dados locais.        */
+const CLOUD_API='/api/data';
+const CLOUD_KEYS=['vendas_sanduicheria','cmv_semanas','cmv_state','cmv_fornecedores','imp_meses','imp_state'];
+const _setItem=localStorage.setItem.bind(localStorage);
+const _pushTimers={};
+function cloudPush(chave,valorObj){
+  return fetch(CLOUD_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chave,valor:valorObj})});
+}
+/* Toda gravação local também é enviada pra nuvem (com leve atraso pra agrupar) */
+localStorage.setItem=function(key,value){
+  _setItem(key,value);
+  if(window.__cloudReady && CLOUD_KEYS.includes(key)){
+    clearTimeout(_pushTimers[key]);
+    _pushTimers[key]=setTimeout(()=>{
+      let obj; try{obj=JSON.parse(value);}catch(e){return;}
+      cloudPush(key,obj).catch(()=>{});
+    },800);
+  }
+};
+async function cloudBootstrap(){
+  let cloud={};
+  try{
+    const r=await fetch(CLOUD_API,{cache:'no-store'});
+    if(!r.ok) throw 0;
+    cloud=await r.json();
+  }catch(e){ window.__cloudReady=false; return; } /* offline: usa dados locais */
+  const temNaNuvem=CLOUD_KEYS.some(k=>cloud[k]!==undefined);
+  if(temNaNuvem){
+    /* Nuvem é a fonte da verdade: traz pro local e recarrega uma vez */
+    if(!sessionStorage.getItem('cloud_synced')){
+      CLOUD_KEYS.forEach(k=>{ if(cloud[k]!==undefined) _setItem(k,JSON.stringify(cloud[k])); });
+      sessionStorage.setItem('cloud_synced','1');
+      location.reload(); return;
+    }
+  } else {
+    /* Primeira vez (nuvem vazia): sobe o que já existe no navegador */
+    for(const k of CLOUD_KEYS){
+      const v=localStorage.getItem(k);
+      if(v){ try{ await cloudPush(k,JSON.parse(v)); }catch(e){} }
+    }
+    sessionStorage.setItem('cloud_synced','1');
+  }
+  window.__cloudReady=true;
+}
+cloudBootstrap();
+/* ======================================================================== */
+
 const API_URL='https://script.google.com/macros/s/AKfycbwVDGd9r1jR6TeomRHF0x47HpvrvJEU7i0BGor5Ydr-czqwUuEhWB8gKKPn4Ud6WRuc/exec';
 const LOJAS=['Brooklin','Mooca','Pinheiros'];
 const LOJA_COLORS={Brooklin:'#1A7A3C',Mooca:'#6B21A8',Pinheiros:'#1A4FAD'};
@@ -773,7 +823,9 @@ function showPage(page){
 async function loadData(){
   setStatus('<span class="spinner"></span> Carregando dados da planilha...','loading');
   try{
-    const res=await fetch(API_URL);
+    // cache-buster (?t=) + no-store: força sempre dados novos da planilha,
+    // sem pegar versão antiga guardada pelo navegador/Google
+    const res=await fetch(API_URL+'?t='+Date.now(),{cache:'no-store'});
     const json=await res.json();
     if(!Array.isArray(json)||json.length===0) throw new Error();
     processData(json);
