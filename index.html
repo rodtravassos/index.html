@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Paulistinha Sanduíches — Painel</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -544,6 +547,7 @@ function setMobileNav(el){
       </div>
     </div>
     <div class="topbar-actions">
+      <span style="font-size:11px;font-weight:700;color:#94a3b8;align-self:center;margin-right:4px;">v3</span>
       <button class="btn" onclick="loadData()">↻ Sincronizar</button>
       <button class="btn btn-blue" onclick="exportarDados()">⬇ Exportar</button>
       <label class="btn btn-green" style="cursor:pointer;">⬆ Importar<input type="file" accept=".json" onchange="importarDados(event)" style="display:none;"></label>
@@ -585,27 +589,7 @@ function setMobileNav(el){
           <div class="venda-mini-val" style="color:var(--purple);" id="kpi-vendas-mes">—</div>
         </div>
       </div>
-      <div class="venda-mini">
-        <div class="venda-mini-dot brooklin">🟢</div>
-        <div class="venda-mini-info">
-          <div class="venda-mini-label">Brooklin</div>
-          <div class="venda-mini-val" style="color:var(--brooklin);" id="kpi-vendas-Brooklin">—</div>
-        </div>
-      </div>
-      <div class="venda-mini">
-        <div class="venda-mini-dot mooca">🟣</div>
-        <div class="venda-mini-info">
-          <div class="venda-mini-label">Mooca</div>
-          <div class="venda-mini-val" style="color:var(--mooca);" id="kpi-vendas-Mooca">—</div>
-        </div>
-      </div>
-      <div class="venda-mini">
-        <div class="venda-mini-dot pinheiros">🔵</div>
-        <div class="venda-mini-info">
-          <div class="venda-mini-label">Pinheiros</div>
-          <div class="venda-mini-val" style="color:var(--pinheiros);" id="kpi-vendas-Pinheiros">—</div>
-        </div>
-      </div>
+      <div class="venda-mini-lojas" id="venda-mini-lojas" style="display:contents;"></div>
     </div>
 
     <div class="tabs" id="tabs">
@@ -660,12 +644,8 @@ function setMobileNav(el){
       <div class="vendas-form">
         <h3 id="form-titulo">🗓 Lançar vendas do dia</h3>
         <div id="edit-banner" class="edit-banner">✏️ Editando lançamento — altere e salve.</div>
-        <div class="form-date-row"><div class="form-group"><div class="form-label">Data</div><input type="date" class="form-input" id="venda-data"></div></div>
-        <div class="loja-inputs">
-          <div class="loja-block brooklin-block"><div class="loja-header"><span class="loja-dot" style="background:var(--brooklin)"></span><span style="color:var(--brooklin)">Brooklin</span></div><div class="loja-sub-grid"><div class="form-group"><div class="form-label">Vendas (R$)</div><input type="text" class="form-input" id="venda-Brooklin-valor" placeholder="5.915,33" oninput="calcTicket('Brooklin')"></div><div class="form-group"><div class="form-label">Qtd pedidos</div><input type="text" class="form-input" id="venda-Brooklin-qtd" placeholder="120" oninput="calcTicket('Brooklin')"></div><div class="form-group"><div class="form-label">Ticket médio</div><input type="text" class="form-input" id="venda-Brooklin-ticket" placeholder="—" readonly style="opacity:0.5;"></div></div></div>
-          <div class="loja-block mooca-block"><div class="loja-header"><span class="loja-dot" style="background:var(--mooca)"></span><span style="color:var(--mooca)">Mooca</span></div><div class="loja-sub-grid"><div class="form-group"><div class="form-label">Vendas (R$)</div><input type="text" class="form-input" id="venda-Mooca-valor" placeholder="5.915,33" oninput="calcTicket('Mooca')"></div><div class="form-group"><div class="form-label">Qtd pedidos</div><input type="text" class="form-input" id="venda-Mooca-qtd" placeholder="120" oninput="calcTicket('Mooca')"></div><div class="form-group"><div class="form-label">Ticket médio</div><input type="text" class="form-input" id="venda-Mooca-ticket" placeholder="—" readonly style="opacity:0.5;"></div></div></div>
-          <div class="loja-block pinheiros-block"><div class="loja-header"><span class="loja-dot" style="background:var(--pinheiros)"></span><span style="color:var(--pinheiros)">Pinheiros</span></div><div class="loja-sub-grid"><div class="form-group"><div class="form-label">Vendas (R$)</div><input type="text" class="form-input" id="venda-Pinheiros-valor" placeholder="5.915,33" oninput="calcTicket('Pinheiros')"></div><div class="form-group"><div class="form-label">Qtd pedidos</div><input type="text" class="form-input" id="venda-Pinheiros-qtd" placeholder="120" oninput="calcTicket('Pinheiros')"></div><div class="form-group"><div class="form-label">Ticket médio</div><input type="text" class="form-input" id="venda-Pinheiros-ticket" placeholder="—" readonly style="opacity:0.5;"></div></div></div>
-        </div>
+        <div class="form-date-row"><div class="form-group"><div class="form-label">Data</div><input type="date" class="form-input" id="venda-data" onchange="renderVendaForm(this.value)"></div></div>
+        <div class="loja-inputs" id="venda-loja-inputs"></div>
         <div><button class="btn-salvar" onclick="salvarVenda()">✓ Salvar lançamento</button><button class="btn-cancelar" id="btn-cancelar" onclick="cancelarEdicao()" style="display:none">Cancelar</button></div>
       </div>
       <div class="vendas-historico"><h3>Histórico de vendas</h3><div id="historico-lista"></div></div>
@@ -686,14 +666,14 @@ function setMobileNav(el){
           </div>
         </div>
       </div>
-      <div class="chart-card" style="margin-bottom:1rem;"><div class="chart-header"><div class="chart-title"><div class="chart-title-dot"></div>Período de referência</div></div><div style="display:flex;gap:1rem;flex-wrap:wrap;"><div class="form-group"><div class="form-label">De</div><input type="date" class="form-input" id="cmv-de" style="width:160px;" oninput="cmvCalc();cmvSaveState()"></div><div class="form-group"><div class="form-label">Até</div><input type="date" class="form-input" id="cmv-ate" style="width:160px;" oninput="cmvCalc();cmvSaveState()"></div></div></div>
-      <div class="chart-card" style="margin-bottom:1rem;"><div class="chart-header"><div class="chart-title"><div class="chart-title-dot"></div>Vendas da semana por loja</div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;"><div class="loja-block brooklin-block"><div class="loja-header"><span class="loja-dot" style="background:var(--brooklin)"></span><span style="color:var(--brooklin)">Brooklin</span></div><div class="form-group"><div class="form-label">Vendas (R$)</div><input type="text" class="form-input" id="cmv-venda-Brooklin" placeholder="ex: 32.500,00" oninput="cmvCalc();cmvSaveState()"></div></div><div class="loja-block mooca-block"><div class="loja-header"><span class="loja-dot" style="background:var(--mooca)"></span><span style="color:var(--mooca)">Mooca</span></div><div class="form-group"><div class="form-label">Vendas (R$)</div><input type="text" class="form-input" id="cmv-venda-Mooca" placeholder="ex: 28.000,00" oninput="cmvCalc();cmvSaveState()"></div></div><div class="loja-block pinheiros-block"><div class="loja-header"><span class="loja-dot" style="background:var(--pinheiros)"></span><span style="color:var(--pinheiros)">Pinheiros</span></div><div class="form-group"><div class="form-label">Vendas (R$)</div><input type="text" class="form-input" id="cmv-venda-Pinheiros" placeholder="ex: 35.000,00" oninput="cmvCalc();cmvSaveState()"></div></div></div></div>
+      <div class="chart-card" style="margin-bottom:1rem;"><div class="chart-header"><div class="chart-title"><div class="chart-title-dot"></div>Período de referência</div></div><div style="display:flex;gap:1rem;flex-wrap:wrap;"><div class="form-group"><div class="form-label">De</div><input type="date" class="form-input" id="cmv-de" style="width:160px;" onchange="cmvLojasExtra=[];cmvRebuild()"></div><div class="form-group"><div class="form-label">Até</div><input type="date" class="form-input" id="cmv-ate" style="width:160px;" onchange="cmvLojasExtra=[];cmvRebuild()"></div></div></div>
+      <div class="chart-card" style="margin-bottom:1rem;"><div class="chart-header"><div class="chart-title"><div class="chart-title-dot"></div>Vendas da semana por loja</div></div><div id="cmv-vendas-lojas" style="display:grid;gap:1rem;"></div></div>
       <div class="chart-card" style="margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
           <div class="chart-title"><div class="chart-title-dot"></div>Compras por fornecedor</div>
           <div style="display:flex;gap:8px;"><input type="text" class="form-input" id="novo-fornecedor" placeholder="Novo fornecedor..." style="width:200px;font-size:13px;padding:7px 10px;" onkeydown="if(event.key==='Enter')cmvAddFornecedor()"><button class="btn-salvar" style="padding:8px 16px;font-size:12px;margin:0;" onclick="cmvAddFornecedor()">+ Add</button></div>
         </div>
-        <div style="overflow-x:auto;"><table id="cmv-table" style="width:100%;border-collapse:collapse;font-size:13px;min-width:900px;"><thead><tr><th style="text-align:left;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;text-transform:uppercase;color:var(--text2);letter-spacing:0.06em;">Fornecedor</th><th style="padding:10px;background:rgba(0,196,140,0.08);border-bottom:1.5px solid var(--border);color:var(--brooklin);font-size:10px;font-weight:800;text-transform:uppercase;">Brooklin</th><th style="padding:10px;background:rgba(123,97,255,0.08);border-bottom:1.5px solid var(--border);color:var(--mooca);font-size:10px;font-weight:800;text-transform:uppercase;">Mooca</th><th style="padding:10px;background:rgba(0,132,244,0.08);border-bottom:1.5px solid var(--border);color:var(--pinheiros);font-size:10px;font-weight:800;text-transform:uppercase;">Pinheiros</th><th style="padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;text-transform:uppercase;color:var(--text2);">Total</th><th style="padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);width:40px;"></th></tr></thead><tbody id="cmv-tbody"></tbody><tfoot><tr style="background:var(--bg);font-weight:800;"><td style="padding:10px;border-top:2px solid var(--border);">TOTAL</td><td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;color:var(--brooklin);" id="cmv-tot-Brooklin">R$ 0,00</td><td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;color:var(--mooca);" id="cmv-tot-Mooca">R$ 0,00</td><td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;color:var(--pinheiros);" id="cmv-tot-Pinheiros">R$ 0,00</td><td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:15px;" id="cmv-tot-geral">R$ 0,00</td><td style="padding:10px;border-top:2px solid var(--border);"></td></tr></tfoot></table></div>
+        <div style="overflow-x:auto;" id="cmv-table-wrap"></div>
       </div>
       <div class="lucro-grid" id="cmv-cards-lojas"></div>
       <div style="margin-top:1rem;display:flex;gap:10px;"><button class="btn-salvar" onclick="cmvSalvar()">✓ Salvar semana</button><button class="btn-cancelar" onclick="cmvNovo()">+ Nova semana</button></div>
@@ -718,7 +698,7 @@ function setMobileNav(el){
         <div class="kpi-card c4"><div class="kpi-icon">📊</div><div class="kpi-label">% sobre faturamento</div><div class="kpi-value" id="imp-kpi-pct">0,0%</div></div>
         <div class="kpi-card c2"><div class="kpi-icon">🧾</div><div class="kpi-label">Faturamento nota</div><div class="kpi-value" id="imp-kpi-fat">R$ 0,00</div></div>
       </div>
-      <div class="chart-card" style="margin-bottom:1.5rem;margin-top:1rem;"><div class="chart-header"><div class="chart-title"><div class="chart-title-dot"></div>Lançamento por imposto e loja</div></div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;min-width:600px;"><thead><tr><th style="text-align:left;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;text-transform:uppercase;color:var(--text2);">Imposto</th><th style="text-align:center;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;color:var(--text2);">Venc.</th><th style="text-align:center;padding:10px;background:rgba(0,196,140,0.08);border-bottom:1.5px solid var(--border);color:var(--brooklin);font-size:10px;font-weight:800;">Brooklin</th><th style="text-align:center;padding:10px;background:rgba(0,132,244,0.08);border-bottom:1.5px solid var(--border);color:var(--pinheiros);font-size:10px;font-weight:800;">Pinheiros</th><th style="text-align:center;padding:10px;background:rgba(123,97,255,0.08);border-bottom:1.5px solid var(--border);color:var(--mooca);font-size:10px;font-weight:800;">Mooca</th><th style="text-align:center;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;color:var(--text2);">Total</th></tr></thead><tbody id="imp-tbody"></tbody><tfoot><tr style="background:var(--bg);font-weight:800;"><td style="padding:10px;border-top:2px solid var(--border);" colspan="2">TOTAL</td><td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;color:var(--brooklin);" id="imp-tot-Brooklin">R$ 0,00</td><td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;color:var(--pinheiros);" id="imp-tot-Pinheiros">R$ 0,00</td><td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;color:var(--mooca);" id="imp-tot-Mooca">R$ 0,00</td><td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:15px;" id="imp-tot-geral">R$ 0,00</td></tr></tfoot></table></div></div>
+      <div class="chart-card" style="margin-bottom:1.5rem;margin-top:1rem;"><div class="chart-header"><div class="chart-title"><div class="chart-title-dot"></div>Lançamento por imposto e loja</div></div><div style="overflow-x:auto;" id="imp-table-wrap"></div></div>
       <div class="lucro-grid" id="imp-cards"></div>
       <div class="chart-card" style="margin-top:1.25rem;"><div class="chart-header"><div class="chart-title"><div class="chart-title-dot"></div>Histórico de meses</div></div><div id="imp-historico"></div></div>
     </div>
@@ -789,9 +769,37 @@ cloudBootstrap();
 /* ======================================================================== */
 
 const API_URL='https://script.google.com/macros/s/AKfycbwVDGd9r1jR6TeomRHF0x47HpvrvJEU7i0BGor5Ydr-czqwUuEhWB8gKKPn4Ud6WRuc/exec';
-const LOJAS=['Brooklin','Mooca','Pinheiros'];
-const LOJA_COLORS={Brooklin:'#1A7A3C',Mooca:'#6B21A8',Pinheiros:'#1A4FAD'};
-const LOJA_CLASS ={Brooklin:'brooklin',Mooca:'mooca',Pinheiros:'pinheiros'};
+/* ===== Cadastro de lojas (com período de atividade) =====
+   Para incluir/fechar uma loja no futuro, é só editar esta lista:
+   ini = primeiro dia ativo | fim = último dia ativo (loja fechada). */
+const LOJAS_INFO=[
+  {nome:'Brooklin',        cor:'#1A7A3C', ini:'2000-01-01', fim:'2999-12-31'},
+  {nome:'Mooca',           cor:'#6B21A8', ini:'2000-01-01', fim:'2026-07-31'},
+  {nome:'Pinheiros',       cor:'#1A4FAD', ini:'2000-01-01', fim:'2999-12-31'},
+  {nome:'Campo Belo',      cor:'#C2410C', ini:'2026-08-01', fim:'2999-12-31'},
+  {nome:'Burger Brooklin', cor:'#B91C1C', ini:'2026-08-01', fim:'2999-12-31'},
+];
+const LOJAS=LOJAS_INFO.map(l=>l.nome);                                  // todas (histórico)
+const LOJA_COLORS=Object.fromEntries(LOJAS_INFO.map(l=>[l.nome,l.cor]));
+const LOJA_CLASS=Object.fromEntries(LOJAS_INFO.map(l=>[l.nome, l.nome.toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g,'')]));
+const LOJA_ORDER=Object.fromEntries(LOJAS_INFO.map((l,i)=>[l.nome,i]));
+const hojeISO=()=>new Date().toISOString().split('T')[0];
+/* Lojas ativas num período [de,ate] (interseção de datas). */
+function lojasEntre(de,ate){
+  if(!de) de=hojeISO(); if(!ate) ate=de;
+  if(ate<de){const t=de;de=ate;ate=t;}
+  return LOJAS_INFO.filter(l=> l.ini<=ate && l.fim>=de).map(l=>l.nome);
+}
+/* Lojas ativas num mês (ano + '01'..'12'). */
+function lojasNoMes(ano,mes01){
+  const ini=`${ano}-${mes01}-01`;
+  const fimMes=new Date(Number(ano),Number(mes01),0).toISOString().split('T')[0];
+  return LOJAS_INFO.filter(l=> l.ini<=fimMes && l.fim>=ini).map(l=>l.nome);
+}
+/* Ordena e remove repetidas mantendo a ordem do cadastro. */
+function ordenarLojas(arr){
+  return [...new Set(arr)].sort((a,b)=>(LOJA_ORDER[a]??99)-(LOJA_ORDER[b]??99));
+}
 const DIV_COLORS=['#C84B00','#1A7A3C','#6B21A8','#1A4FAD','#8B6914','#1A7A6A','#8B1F1F'];
 
 let allData=[],currentTab='todas',currentPage='dashboard',editingData=null;
@@ -961,7 +969,24 @@ function renderDashboard(){
   const totalVendasMes=vendasMes.reduce((s,v)=>s+lojasFiltradas.reduce((x,l)=>x+((v[l]||{}).valor||0),0),0);
   const kvm=document.getElementById('kpi-vendas-mes');
   if(kvm) kvm.textContent=fmt(totalVendasMes);
-  LOJAS.forEach(l=>{
+
+  // mini-cards de vendas por loja (dinâmico): lojas com venda no mês + ativas hoje
+  const lojasComVenda=LOJAS.filter(l=>vendasMes.some(v=>((v[l]||{}).valor||0)>0));
+  const lojasMini=ordenarLojas([...lojasComVenda, ...lojasEntre(hojeISO(),hojeISO())]);
+  const miniWrap=document.getElementById('venda-mini-lojas');
+  if(miniWrap){
+    miniWrap.innerHTML=lojasMini.map(l=>{
+      const cor=LOJA_COLORS[l]||'#888';
+      return `<div class="venda-mini">
+        <div class="venda-mini-dot" style="background:${cor};color:${cor};">⬤</div>
+        <div class="venda-mini-info">
+          <div class="venda-mini-label">${l}</div>
+          <div class="venda-mini-val" style="color:${cor};" id="kpi-vendas-${l}">—</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  lojasMini.forEach(l=>{
     const el=document.getElementById(`kpi-vendas-${l}`);
     if(el){
       const vl=lojaFil==='todas'||lojaFil===l
@@ -1105,26 +1130,55 @@ function renderPizza(map, total, totalVendas){
 function renderAll(){renderDashboard();if(currentPage==='resultado')renderResultado();}
 
 // VENDAS
+// Lojas que aparecem no formulário para uma data: ativas na data +
+// as que já têm dados no lançamento existente daquela data (histórico).
+function lojasFormVendas(dateStr){
+  const ativas=lojasEntre(dateStr,dateStr);
+  const entry=vendas.find(v=>v.data===dateStr)||{};
+  const comDados=LOJAS.filter(l=>entry[l]&&((entry[l].valor||0)>0||(entry[l].qtd||0)>0));
+  return ordenarLojas([...ativas,...comDados]);
+}
+// Monta os blocos de loja do formulário conforme a data selecionada
+function renderVendaForm(dateStr){
+  dateStr=dateStr||document.getElementById('venda-data').value||hojeISO();
+  const cont=document.getElementById('venda-loja-inputs');
+  if(!cont) return;
+  const lojas=lojasFormVendas(dateStr);
+  cont.innerHTML=lojas.map(l=>{
+    const cor=LOJA_COLORS[l]||'#888';
+    return `<div class="loja-block" style="border-top:3px solid ${cor};">
+      <div class="loja-header"><span class="loja-dot" style="background:${cor}"></span><span style="color:${cor}">${l}</span></div>
+      <div class="loja-sub-grid">
+        <div class="form-group"><div class="form-label">Vendas (R$)</div><input type="text" class="form-input" id="venda-${l}-valor" placeholder="5.915,33" oninput="calcTicket('${l}')"></div>
+        <div class="form-group"><div class="form-label">Qtd pedidos</div><input type="text" class="form-input" id="venda-${l}-qtd" placeholder="120" oninput="calcTicket('${l}')"></div>
+        <div class="form-group"><div class="form-label">Ticket médio</div><input type="text" class="form-input" id="venda-${l}-ticket" placeholder="—" readonly style="opacity:0.5;"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
 function salvarVenda(){
   const data=document.getElementById('venda-data').value;
   if(!data){alert('Selecione uma data.');return;}
 
   let algumValor=false;
-  const entry={data};
-  LOJAS.forEach(l=>{
-    const v=parseBR(document.getElementById(`venda-${l}-valor`).value);
-    const q=parseBR(document.getElementById(`venda-${l}-qtd`).value);
+  const idxExist=vendas.findIndex(v=>v.data===data);
+  const entry= idxExist>=0 ? {...vendas[idxExist]} : {data};
+  entry.data=data;
+  lojasFormVendas(data).forEach(l=>{
+    const elV=document.getElementById(`venda-${l}-valor`);
+    const elQ=document.getElementById(`venda-${l}-qtd`);
+    if(!elV) return;
+    const v=parseBR(elV.value);
+    const q=parseBR(elQ?elQ.value:'');
     entry[l]={valor:v,qtd:q};
     if(v>0||q>0) algumValor=true;
   });
   if(!algumValor){alert('Informe o valor de pelo menos uma loja.');return;}
 
-  const idx=vendas.findIndex(v=>v.data===data);
-  if(idx>=0) vendas[idx]=entry; else vendas.push(entry);
+  if(idxExist>=0) vendas[idxExist]=entry; else vendas.push(entry);
   vendas.sort((a,b)=>b.data.localeCompare(a.data));
   localStorage.setItem('vendas_sanduicheria',JSON.stringify(vendas));
 
-  limparForm();
   cancelarEdicao();
   renderHistorico();
   alert('✓ Venda salva com sucesso!');
@@ -1145,17 +1199,20 @@ function parseBR(v){
 }
 
 function calcTicket(loja){
-  const v=parseBR(document.getElementById(`venda-${loja}-valor`).value);
-  const q=parseBR(document.getElementById(`venda-${loja}-qtd`).value);
+  const elV=document.getElementById(`venda-${loja}-valor`);
+  const elQ=document.getElementById(`venda-${loja}-qtd`);
   const ticketEl=document.getElementById(`venda-${loja}-ticket`);
+  if(!elV||!elQ||!ticketEl) return;
+  const v=parseBR(elV.value), q=parseBR(elQ.value);
   ticketEl.value=(v>0&&q>0)?'R$ '+(v/q).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
 }
 
 function limparForm(){
   LOJAS.forEach(l=>{
-    document.getElementById(`venda-${l}-valor`).value='';
-    document.getElementById(`venda-${l}-qtd`).value='';
-    document.getElementById(`venda-${l}-ticket`).value='';
+    const a=document.getElementById(`venda-${l}-valor`);
+    const b=document.getElementById(`venda-${l}-qtd`);
+    const c=document.getElementById(`venda-${l}-ticket`);
+    if(a) a.value=''; if(b) b.value=''; if(c) c.value='';
   });
 }
 
@@ -1164,10 +1221,14 @@ function editarVenda(data){
   if(!v) return;
   editingData=data;
   document.getElementById('venda-data').value=data;
+  renderVendaForm(data);
   LOJAS.forEach(l=>{
     const ld=v[l]||{};
-    document.getElementById(`venda-${l}-valor`).value=ld.valor||'';
-    document.getElementById(`venda-${l}-qtd`).value=ld.qtd||'';
+    const elV=document.getElementById(`venda-${l}-valor`);
+    const elQ=document.getElementById(`venda-${l}-qtd`);
+    if(!elV) return;
+    elV.value=ld.valor||'';
+    if(elQ) elQ.value=ld.qtd||'';
     calcTicket(l);
   });
   document.getElementById('form-titulo').textContent='Editar lançamento';
@@ -1179,8 +1240,8 @@ function editarVenda(data){
 
 function cancelarEdicao(){
   editingData=null;
-  limparForm();
   document.getElementById('venda-data').value=new Date().toISOString().split('T')[0];
+  renderVendaForm(document.getElementById('venda-data').value);
   document.getElementById('form-titulo').textContent='Lançar vendas do dia';
   document.getElementById('edit-banner').classList.remove('visible');
   document.getElementById('btn-cancelar').style.display='none';
@@ -1321,6 +1382,13 @@ const IMP_LINHAS = [
 const IMP_IMPOSTOS = IMP_LINHAS.filter(l => !l.isVendas && !l.isFat);
 let impMeses = JSON.parse(localStorage.getItem('imp_meses') || '[]');
 let impEditando = null;
+let impLojasExtra = [];   // lojas extras ao carregar mês histórico
+// Lojas do mês selecionado nos impostos + extras (histórico)
+function impLojas(){
+  const mes=(document.getElementById('imp-mes')||{}).value||'01';
+  const ano=(document.getElementById('imp-ano')||{}).value||String(new Date().getFullYear());
+  return ordenarLojas([...lojasNoMes(ano,mes), ...impLojasExtra]);
+}
 
 function impSaveLocal(){ localStorage.setItem('imp_meses', JSON.stringify(impMeses)); }
 
@@ -1339,11 +1407,14 @@ function impInit(){
 }
 
 function impRenderTabela(){
-  const tbody = document.getElementById('imp-tbody');
-  tbody.innerHTML = IMP_LINHAS.map(l => {
+  const LJ=impLojas();
+  const wrap=document.getElementById('imp-table-wrap');
+  if(!wrap) return;
+  const ths=LJ.map(loja=>`<th style="text-align:center;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);color:${LOJA_COLORS[loja]||'#888'};font-size:10px;font-weight:800;">${loja}</th>`).join('');
+  const bodyRows=IMP_LINHAS.map(l => {
     const isTotal = !l.isVendas && !l.isFat;
     const bg = l.isVendas ? 'background:var(--bg2);' : l.isFat ? 'background:#FFFBEB;' : '';
-    const inputs = ['Brooklin','Pinheiros','Mooca'].map(loja =>
+    const inputs = LJ.map(loja =>
       isTotal
         ? `<td style="text-align:center;${bg}"><input class="cmv-input" id="imp-${l.key}-${loja}" type="text" placeholder="0,00" oninput="impCalc();impSaveState2()" style="width:110px;"></td>`
         : `<td style="text-align:center;${bg}"><input class="cmv-input" id="imp-${l.key}-${loja}" type="text" placeholder="0,00" oninput="impCalc();impSaveState2()" style="width:110px;background:${l.isFat?'#FFFBEB':'var(--bg2)'};"></td>`
@@ -1355,16 +1426,31 @@ function impRenderTabela(){
       <td style="text-align:center;padding:8px 10px;font-family:DM Mono,monospace;font-size:12px;font-weight:600;${bg}" id="imp-row-total-${l.key}">—</td>
     </tr>`;
   }).join('');
+  const tfootTds=LJ.map(loja=>`<td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;color:${LOJA_COLORS[loja]||'#888'};" id="imp-tot-${loja}">R$ 0,00</td>`).join('');
+  wrap.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:13px;min-width:${480+LJ.length*120}px;">
+    <thead><tr>
+      <th style="text-align:left;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;text-transform:uppercase;color:var(--text2);">Imposto</th>
+      <th style="text-align:center;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;color:var(--text2);">Venc.</th>
+      ${ths}
+      <th style="text-align:center;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;color:var(--text2);">Total</th>
+    </tr></thead>
+    <tbody id="imp-tbody">${bodyRows}</tbody>
+    <tfoot><tr style="background:var(--bg);font-weight:800;">
+      <td style="padding:10px;border-top:2px solid var(--border);" colspan="2">TOTAL</td>
+      ${tfootTds}
+      <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:15px;" id="imp-tot-geral">R$ 0,00</td>
+    </tr></tfoot>
+  </table>`;
 }
 
 function impCalc(){
-  const totLojas = {Brooklin:0, Pinheiros:0, Mooca:0};
-  const fatLojas = {Brooklin:0, Pinheiros:0, Mooca:0};
+  const LJ=impLojas();
+  const totLojas={}, fatLojas={}; LJ.forEach(l=>{totLojas[l]=0;fatLojas[l]=0;});
   let totGeral = 0, fatGeral = 0;
 
   IMP_LINHAS.forEach(l => {
     let rowTotal = 0;
-    ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+    LJ.forEach(loja => {
       const el = document.getElementById(`imp-${l.key}-${loja}`);
       const v = parseBR(el ? el.value : '') || 0;
       rowTotal += v;
@@ -1375,7 +1461,7 @@ function impCalc(){
     if (rowEl) rowEl.textContent = rowTotal > 0 ? fmt(rowTotal) : '—';
   });
 
-  ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+  LJ.forEach(loja => {
     const el = document.getElementById(`imp-tot-${loja}`);
     if(el) el.textContent = fmt(totLojas[loja]);
   });
@@ -1393,7 +1479,7 @@ function impCalc(){
 
   // Cards por loja
   const cards = document.getElementById('imp-cards');
-  if(cards) cards.innerHTML = ['Brooklin','Pinheiros','Mooca'].map(loja => {
+  if(cards) cards.innerHTML = LJ.map(loja => {
     const cor = LOJA_COLORS[loja]||'#888';
     const imp = totLojas[loja];
     const fat = fatLojas[loja];
@@ -1413,7 +1499,7 @@ function impCalc(){
 function impSaveState2(){
   try{
     const state = {};
-    IMP_LINHAS.forEach(l => ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+    IMP_LINHAS.forEach(l => impLojas().forEach(loja => {
       const el = document.getElementById(`imp-${l.key}-${loja}`);
       if(el && el.value) state[`${l.key}-${loja}`] = el.value;
     }));
@@ -1423,12 +1509,13 @@ function impSaveState2(){
 }
 
 function impCarregar(){
-  impRenderTabela();
   const key = impGetKey();
-  // Tentar carregar do histórico
   const mes = impMeses.find(m => m.key === key);
+  // inclui lojas presentes nos dados salvos (ex: Mooca em meses antigos)
+  impLojasExtra = mes ? Object.values(mes.dados||{}).flatMap(o=>Object.keys(o)) : [];
+  impRenderTabela();
   if(mes){
-    IMP_LINHAS.forEach(l => ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+    IMP_LINHAS.forEach(l => impLojas().forEach(loja => {
       const el = document.getElementById(`imp-${l.key}-${loja}`);
       if(el) el.value = (mes.dados[l.key]||{})[loja] > 0 ? String((mes.dados[l.key]||{})[loja]).replace('.',',') : '';
     }));
@@ -1443,7 +1530,7 @@ function impSalvar(){
   const dados = {};
   IMP_LINHAS.forEach(l => {
     dados[l.key] = {};
-    ['Brooklin','Pinheiros','Mooca'].forEach(loja => {
+    impLojas().forEach(loja => {
       const el = document.getElementById(`imp-${l.key}-${loja}`);
       dados[l.key][loja] = parseBR(el ? el.value : '') || 0;
     });
@@ -1457,6 +1544,7 @@ function impSalvar(){
 }
 
 function impNovo(){
+  impLojasExtra=[];
   impRenderTabela();
   impCalc();
 }
@@ -1503,12 +1591,41 @@ function impRenderHistorico(){
 }
 
 // ===================== CMV =====================
-const FORNECEDORES_DEFAULT=['MARFRIG','PMG','LONDRES','MEGA G','MMFOODS','BUY FOODS','ASSAÍ','UBER/ML/IFOOD/TENDA','FREXCO','3GX','KATAYAMA','LIFE GOURMET','COCA','FRIBOI'];
+const FORNECEDORES_DEFAULT=['MARFRIG','PMG','LONDRES','MEGA G','MMFOODS','BUY FOODS','ASSAÍ','UBER/ML/IFOOD/TENDA','FREXCO','3GX','KATAYAMA','LIFE GOURMET','COCA','FRIBOI','PRIETRO','PRIME BAKER','ATACADÃO'];
 let fornecedores=JSON.parse(localStorage.getItem('cmv_fornecedores')||'null')||[...FORNECEDORES_DEFAULT];
+// Garante que fornecedores novos apareçam mesmo para quem já tem lista salva
+['PRIETRO','PRIME BAKER','ATACADÃO'].forEach(f=>{ if(!fornecedores.includes(f)) fornecedores.push(f); });
+localStorage.setItem('cmv_fornecedores',JSON.stringify(fornecedores));
 function saveFornecedores(){ localStorage.setItem('cmv_fornecedores',JSON.stringify(fornecedores)); }
 const CMV_META=0.30;
 let cmvSemanas=(function(){const s=localStorage.getItem('cmv_semanas');if(s){const a=JSON.parse(s);if(a.length>0)return a;}const d=[{"de": "2026-04-27", "ate": "2026-05-03", "vendas": {"Brooklin": 42798.75, "Mooca": 14620.3, "Pinheiros": 38499.84}, "compras": {"MARFRIG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "PMG": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LONDRES": {"Brooklin": 5392.08, "Mooca": 0, "Pinheiros": 0}, "MEGA G": {"Brooklin": 6483.49, "Mooca": 0, "Pinheiros": 1814.84}, "MMFOODS": {"Brooklin": 413.4, "Mooca": 0, "Pinheiros": 413.4}, "BUY FOODS": {"Brooklin": 164.0, "Mooca": 0, "Pinheiros": 164.0}, "ASSAÍ": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "UBER/ML/IFOOD/TENDA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "FREXCO": {"Brooklin": 285.07, "Mooca": 0, "Pinheiros": 0}, "3GX": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "KATAYAMA": {"Brooklin": 0, "Mooca": 0, "Pinheiros": 0}, "LIFE GOURMET": {"Brooklin": 966.0, "Mooca": 322.0, "Pinheiros": 966.0}, "COCA": {"Brooklin": 874.14, "Mooca": 0, "Pinheiros": 501.44}, "FRIBOI": {"Brooklin": 5431.84, "Mooca": 0, "Pinheiros": 0}}}];localStorage.setItem('cmv_semanas',JSON.stringify(d));return d;})();
 let cmvEditando=null;
+let cmvLojasExtra=[];   // lojas adicionais ao editar uma semana histórica
+// Lojas que aparecem no CMV: ativas no período + extras (edição de histórico)
+function cmvLojas(){
+  const de=(document.getElementById('cmv-de')||{}).value||hojeISO();
+  const ate=(document.getElementById('cmv-ate')||{}).value||de;
+  return ordenarLojas([...lojasEntre(de,ate), ...cmvLojasExtra]);
+}
+function cmvSaveState(){
+  try{
+    const state={};
+    const de=document.getElementById('cmv-de'), ate=document.getElementById('cmv-ate');
+    if(de&&de.value) state['cmv-de']=de.value;
+    if(ate&&ate.value) state['cmv-ate']=ate.value;
+    cmvLojas().forEach(l=>{
+      const ev=document.getElementById(`cmv-venda-${l}`);
+      if(ev&&ev.value) state[`venda-${l}`]=ev.value;
+      fornecedores.forEach(f=>{
+        const el=document.getElementById(`cmv-${f}-${l}`);
+        if(el&&el.value) state[`${f}-${l}`]=el.value;
+      });
+    });
+    localStorage.setItem('cmv_state',JSON.stringify(state));
+  }catch(e){}
+}
+// Remonta a tabela quando muda o período (preservando o que foi digitado)
+function cmvRebuild(){ cmvSaveState(); cmvRenderTabela(); }
 (function(){
   const s=localStorage.getItem('cmv_state');
   if(!s||Object.keys(JSON.parse(s)).length===0){
@@ -1523,30 +1640,59 @@ let cmvEditando=null;
 })();
 
 function cmvRenderTabela_inner(){
-  const tbody=document.getElementById('cmv-tbody');
-  tbody.innerHTML=fornecedores.map(f=>`
-    <tr class="cmv-row" id="cmv-tr-${f.replace(/[^a-zA-Z0-9]/g,'_')}">
+  const lojas=cmvLojas();
+
+  // Bloco "Vendas da semana por loja"
+  const vl=document.getElementById('cmv-vendas-lojas');
+  if(vl){
+    vl.style.gridTemplateColumns=`repeat(${lojas.length},1fr)`;
+    vl.innerHTML=lojas.map(l=>{
+      const cor=LOJA_COLORS[l]||'#888';
+      return `<div class="loja-block" style="border-top:3px solid ${cor};"><div class="loja-header"><span class="loja-dot" style="background:${cor}"></span><span style="color:${cor}">${l}</span></div><div class="form-group"><div class="form-label">Vendas (R$)</div><input type="text" class="form-input" id="cmv-venda-${l}" placeholder="ex: 32.500,00" oninput="cmvCalc();cmvSaveState()"></div></div>`;
+    }).join('');
+  }
+
+  // Tabela de compras por fornecedor (cabeçalho + corpo + rodapé dinâmicos)
+  const wrap=document.getElementById('cmv-table-wrap');
+  if(!wrap) return;
+  const ths=lojas.map(l=>`<th style="padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);color:${LOJA_COLORS[l]||'#888'};font-size:10px;font-weight:800;text-transform:uppercase;">${l}</th>`).join('');
+  const tfootTds=lojas.map(l=>`<td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;color:${LOJA_COLORS[l]||'#888'};" id="cmv-tot-${l}">R$ 0,00</td>`).join('');
+  const rows=fornecedores.map(f=>{
+    const inputs=lojas.map(l=>`<td style="text-align:center"><input class="cmv-input" id="cmv-${f}-${l}" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>`).join('');
+    return `<tr class="cmv-row" id="cmv-tr-${f.replace(/[^a-zA-Z0-9]/g,'_')}">
       <td class="cmv-fornecedor">${f}</td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-${f}-Brooklin"  type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-${f}-Mooca"     type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
-      <td style="text-align:center"><input class="cmv-input" id="cmv-${f}-Pinheiros" type="text" placeholder="0,00 ou 100+50" oninput="cmvCalc();cmvSaveState();"></td>
+      ${inputs}
       <td class="cmv-total-cell" id="cmv-row-total-${f}">—</td>
-      <td style="text-align:center;">
-        <button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor('${f.replace(/'/g,"\'")}')" title="Remover fornecedor">✕</button>
-      </td>
-    </tr>`).join('');
+      <td style="text-align:center;"><button class="btn-del" style="font-size:11px;padding:3px 8px;" onclick="cmvRemoveFornecedor('${f.replace(/'/g,"\\'")}')" title="Remover fornecedor">✕</button></td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML=`<table id="cmv-table" style="width:100%;border-collapse:collapse;font-size:13px;min-width:${560+lojas.length*120}px;">
+    <thead><tr>
+      <th style="text-align:left;padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;text-transform:uppercase;color:var(--text2);letter-spacing:0.06em;">Fornecedor</th>
+      ${ths}
+      <th style="padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-size:10px;font-weight:800;text-transform:uppercase;color:var(--text2);">Total</th>
+      <th style="padding:10px;background:var(--bg);border-bottom:1.5px solid var(--border);width:40px;"></th>
+    </tr></thead>
+    <tbody id="cmv-tbody">${rows}</tbody>
+    <tfoot><tr style="background:var(--bg);font-weight:800;">
+      <td style="padding:10px;border-top:2px solid var(--border);">TOTAL</td>
+      ${tfootTds}
+      <td style="padding:10px;border-top:2px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:15px;" id="cmv-tot-geral">R$ 0,00</td>
+      <td style="padding:10px;border-top:2px solid var(--border);"></td>
+    </tr></tfoot>
+  </table>`;
 }
 
 function cmvRestoreState(){
   try{
     const state=JSON.parse(localStorage.getItem('cmv_state')||'{}');
     if(!Object.keys(state).length) return;
-    ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+    cmvLojas().forEach(l=>{
       const el=document.getElementById(`cmv-venda-${l}`);
       if(el&&state[`venda-${l}`]) el.value=state[`venda-${l}`];
     });
     fornecedores.forEach(f=>{
-      ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+      cmvLojas().forEach(l=>{
         const el=document.getElementById(`cmv-${f}-${l}`);
         if(el&&state[`${f}-${l}`]) el.value=state[`${f}-${l}`];
       });
@@ -1583,29 +1729,31 @@ function cmvRemoveFornecedor(nome){
 }
 
 function cmvInit(){
-  // popular tabela
-  cmvRenderTabela();
-
-  // data padrão: semana passada (só aplica se não tiver estado salvo)
+  // 1) define o período ANTES de montar a tabela (pra colunas baterem)
   const state=JSON.parse(localStorage.getItem('cmv_state')||'{}');
-  if(!state['cmv-de']){
+  const de=document.getElementById('cmv-de'), ate=document.getElementById('cmv-ate');
+  if(state['cmv-de']){ de.value=state['cmv-de']; }
+  if(state['cmv-ate']){ ate.value=state['cmv-ate']; }
+  if(!de.value){
     const hoje=new Date();
     const diasSemana=hoje.getDay()||7;
     const ultSeg=new Date(hoje); ultSeg.setDate(hoje.getDate()-diasSemana-6);
     const ultDom=new Date(hoje); ultDom.setDate(hoje.getDate()-diasSemana);
-    document.getElementById('cmv-de').value=ultSeg.toISOString().split('T')[0];
-    document.getElementById('cmv-ate').value=ultDom.toISOString().split('T')[0];
+    de.value=ultSeg.toISOString().split('T')[0];
+    ate.value=ultDom.toISOString().split('T')[0];
   }
-  cmvRestoreState();
-  cmvCalc();
+  // 2) monta tabela (colunas conforme período) + restaura valores + calcula
+  cmvRenderTabela();
   cmvRenderHistorico();
 }
 
 function cmvCalc(){
+  const LJ=cmvLojas();
   const totalVendasLojas={};
   let totalVendas=0;
-  ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-    const v=parseBR(document.getElementById(`cmv-venda-${l}`).value)||0;
+  LJ.forEach(l=>{
+    const ev=document.getElementById(`cmv-venda-${l}`);
+    const v=parseBR(ev?ev.value:'')||0;
     totalVendasLojas[l]=v;
     totalVendas+=v;
   });
@@ -1615,11 +1763,11 @@ function cmvCalc(){
   document.getElementById('cmv-limite').textContent=fmt(limite);
 
   // totais por loja e fornecedor
-  const totLojas={Brooklin:0,Mooca:0,Pinheiros:0};
+  const totLojas={}; LJ.forEach(l=>totLojas[l]=0);
   let totGeral=0;
   fornecedores.forEach(f=>{
     let rowTotal=0;
-    ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+    LJ.forEach(l=>{
       const inputEl=document.getElementById(`cmv-${f}-${l}`);
       const rawVal=(inputEl?inputEl.value:'').trim();
       const v=parseBR(rawVal)||0;
@@ -1631,8 +1779,9 @@ function cmvCalc(){
     document.getElementById(`cmv-row-total-${f}`).textContent=rowTotal>0?fmt(rowTotal):'—';
   });
 
-  ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-    document.getElementById(`cmv-tot-${l}`).textContent=fmt(totLojas[l]);
+  LJ.forEach(l=>{
+    const te=document.getElementById(`cmv-tot-${l}`);
+    if(te) te.textContent=fmt(totLojas[l]);
   });
   document.getElementById('cmv-tot-geral').textContent=fmt(totGeral);
   document.getElementById('cmv-total-comprado').textContent=fmt(totGeral);
@@ -1661,7 +1810,7 @@ function cmvCalc(){
 
   // cards por loja
   const cards=document.getElementById('cmv-cards-lojas');
-  cards.innerHTML=['Brooklin','Mooca','Pinheiros'].map(l=>{
+  cards.innerHTML=LJ.map(l=>{
     const venda=totalVendasLojas[l]||0;
     const comprado=totLojas[l]||0;
     const limLoja=venda*CMV_META;
@@ -1706,13 +1855,15 @@ function cmvSalvar(){
     const ate=document.getElementById('cmv-ate').value;
     if(!de||!ate){alert('Informe o período da semana.');return;}
 
+    const LJ=cmvLojas();
     const entry={de,ate,vendas:{},compras:{}};
-    ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-      entry.vendas[l]=parseBR(document.getElementById(`cmv-venda-${l}`).value)||0;
+    LJ.forEach(l=>{
+      const ev=document.getElementById(`cmv-venda-${l}`);
+      entry.vendas[l]=parseBR(ev?ev.value:'')||0;
     });
     fornecedores.forEach(f=>{
       entry.compras[f]={};
-      ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
+      LJ.forEach(l=>{
         const el=document.getElementById(`cmv-${f}-${l}`);
         entry.compras[f][l]=el?parseBR(el.value)||0:0;
       });
@@ -1734,11 +1885,17 @@ function cmvSalvar(){
 
 function cmvNovo(){
   cmvEditando=null;
-  ['Brooklin','Mooca','Pinheiros'].forEach(l=>document.getElementById(`cmv-venda-${l}`).value='');
-  fornecedores.forEach(f=>['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-    const el=document.getElementById(`cmv-${f}-${l}`);
-    if(el) el.value='';
-  }));
+  cmvLojasExtra=[];
+  cmvRenderTabela();
+  cmvLojas().forEach(l=>{
+    const ev=document.getElementById(`cmv-venda-${l}`);
+    if(ev) ev.value='';
+    fornecedores.forEach(f=>{
+      const el=document.getElementById(`cmv-${f}-${l}`);
+      if(el) el.value='';
+    });
+  });
+  cmvSaveState();
   cmvCalc();
 }
 
@@ -1747,13 +1904,20 @@ function cmvEditar(idx){
   cmvEditando=idx;
   document.getElementById('cmv-de').value=s.de;
   document.getElementById('cmv-ate').value=s.ate;
-  ['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-    document.getElementById(`cmv-venda-${l}`).value=(s.vendas[l]||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
+  // inclui lojas que existem nos dados salvos (ex: Mooca em semanas antigas)
+  cmvLojasExtra=Object.keys(s.vendas||{}).concat(
+    Object.values(s.compras||{}).flatMap(o=>Object.keys(o))
+  );
+  cmvRenderTabela();
+  cmvLojas().forEach(l=>{
+    const ev=document.getElementById(`cmv-venda-${l}`);
+    if(ev) ev.value=(s.vendas[l]||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
+    fornecedores.forEach(f=>{
+      const el=document.getElementById(`cmv-${f}-${l}`);
+      if(el){ const v=(s.compras[f]||{})[l]||0; el.value=v>0?v.toLocaleString('pt-BR',{minimumFractionDigits:2}):''; }
+    });
   });
-  fornecedores.forEach(f=>['Brooklin','Mooca','Pinheiros'].forEach(l=>{
-    const v=(s.compras[f]||{})[l]||0;
-    document.getElementById(`cmv-${f}-${l}`).value=v>0?v.toLocaleString('pt-BR',{minimumFractionDigits:2}):'';
-  }));
+  cmvSaveState();
   cmvCalc();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1853,6 +2017,7 @@ function importarDados(event){
 
 // Init
 document.getElementById('venda-data').value=new Date().toISOString().split('T')[0];
+renderVendaForm(document.getElementById('venda-data').value);
 showPage('dashboard');
 loadData();
 cmvInit();
